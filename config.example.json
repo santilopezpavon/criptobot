@@ -1,0 +1,12 @@
+{
+    "information": {
+        "urlbaseapi": "https://api.binance.com/api/v1/"
+    },
+    "email": {
+        "user": "user smtp",
+        "pass": "password smtp",
+        "to": "email destination",
+        "from": "Name from email <email from>",        
+        "active": true 
+    }    
+}
