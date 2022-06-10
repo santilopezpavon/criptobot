@@ -4,7 +4,7 @@ This is a Boot for trading with cripto.
 
 # Configuration
 
-Rename the config.example.json to config.json, this is the file of configuration.
+Rename the config.example.json to config.json, this is the configuration file.
 
 ```js
 {

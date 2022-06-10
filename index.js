@@ -2,7 +2,7 @@
 const Bot = require("./src/Bot/Bot");
 
 const bot = new Bot("DOTBUSD", 30);
-bot.init(10);
+bot.init(60*3);
 
 
 //console.log(Date.now());
