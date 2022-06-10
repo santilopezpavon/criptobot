@@ -1,10 +1,10 @@
-const getConnection = require("./../../src/Connector/Connector");
+const getCoinsInformation = require("../Connector/CoinsInformation");
 const getIndicator = require("./../../src/Indicators/Indicator");
 const getComunication = require("./../../src/Communication/Communication");
 
 class Bot {
 
-    #conection = getConnection();
+    #coinsInformation = getCoinsInformation();
 
     #indicator = getIndicator();
 
@@ -44,7 +44,7 @@ class Bot {
         }
 
 
-        this.#conection.getHistoricalData(this.pair, "3m").then(function (data) {
+        this.#coinsInformation.getHistoricalData(this.pair, "3m").then(function (data) {
             current.#indicator.setData(data);
 
 

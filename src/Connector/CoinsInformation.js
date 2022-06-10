@@ -2,20 +2,20 @@ const configuration = require("../../config.json");
 const axios = require('axios');
 
 
-function getConnection() {
-    return Connector.getInstance();
+function getCoinsInformation() {
+    return CoinsInformation.getInstance();
 }
 
-class Connector {
+class CoinsInformation {
     url = configuration.information.urlbaseapi;    
 
     static #instance;
 
     static getInstance() {
-        if (!Connector.#instance) {
-            Connector.#instance = new Connector()
+        if (!CoinsInformation.#instance) {
+            CoinsInformation.#instance = new CoinsInformation()
         }
-        return Connector.#instance
+        return CoinsInformation.#instance
     }
 
     /**
@@ -69,5 +69,5 @@ class Connector {
 
 }
 
-module.exports = getConnection;
+module.exports = getCoinsInformation;
 
