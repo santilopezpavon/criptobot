@@ -25,8 +25,8 @@ class CoinsInformation {
      * @param {string} interval 
      * @returns {string}
      */
-    #getUrl(parCoin, path, time) {
-        return this.url + path + '?symbol=' + parCoin + '&interval=' + time + '&limit=1000';
+    #getUrl(parCoin, path, time, limit = 1000) {
+        return this.url + path + '?symbol=' + parCoin + '&interval=' + time + '&limit=' + limit;
     }
 
     /**
@@ -64,6 +64,20 @@ class CoinsInformation {
         });
         return dataArrayConvert;
     }
+
+
+    async getCurrentPrice(asset) {
+        const parCoin = asset + "USDT";
+        const historicalData = await this.getHistoricalData(parCoin, "1m");
+        return historicalData[historicalData.length - 1].close;
+    }
+
+    async getTotalValueAsset(asset, qty) {
+        const price = await this.getCurrentPrice(asset);
+        return price * qty;
+    }
+
+
 
 
 

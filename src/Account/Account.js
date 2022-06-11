@@ -35,7 +35,9 @@ class Account {
                 })
                 return list;
             }
-        )
+        ).catch(function (error) {
+            return false;
+        });
     }
 
     async getStockOf(asset) {
@@ -44,8 +46,10 @@ class Account {
                 return obj.asset == asset
             });
             if(items.length > 0) {
-                return items[0].free;
+                return parseFloat(items[0].free);
             }
+            return false;
+        }).catch(function (error) {
             return false;
         });
     }

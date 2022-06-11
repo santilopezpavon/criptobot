@@ -1,11 +1,17 @@
 
-/*const Bot = require("./src/Bot/Bot");
+const Bot = require("./src/Bot/Bot");
 
-const bot = new Bot("DOTBUSD", 30);
-bot.init(60*3);*/
+const bot = new Bot();
+bot.init();
 
+
+/*const getCoinsInformation = require("./src/Connector/CoinsInformation"); 
 const getAccount = require("./src/Account/Account"); 
-const account = getAccount().getStockOf("BTC").then(function (res){
-    console.log(res);
-});
+
+const coinInformation = getCoinsInformation();
+
+const account = getAccount().getStockOf("DOT").then(async function (qty){
+    const total = await coinInformation.getTotalValueAsset("DOT", qty);
+    console.log(total);
+});*/
 
