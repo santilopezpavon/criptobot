@@ -29,7 +29,7 @@ class Operations {
     async buyOperation(dataBuyOperation) {
         const current = this;
 
-        dataBuyOperation.priceSell = this.#truncate(dataBuyOperation.priceBuy, "price");
+        dataBuyOperation.priceBuy = this.#truncate(dataBuyOperation.priceBuy, "price");
         dataBuyOperation.qty = this.#truncate(dataBuyOperation.qty, "qty");
 
         const order = {
@@ -38,6 +38,8 @@ class Operations {
             "timeInForce": "GTC"
         };
 
+        console.log("Order real");
+        console.log(order);
         return current.#client.newOrder(dataBuyOperation.pair, "BUY", 'LIMIT', order).then(function (response) {
             current.#memory.saveFile({});            
             return response;

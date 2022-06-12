@@ -33,7 +33,11 @@ class Memory {
     }
 
     loadFile() {
-       return  JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
+     if (fs.existsSync(this.filePath)) {
+        return  JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
+    }
+    return false;
+       
     }    
 
 }
