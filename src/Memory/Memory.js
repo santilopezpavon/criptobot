@@ -37,6 +37,7 @@ class Memory {
         return  JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
     }
     return false;
+    
        
     }    
 

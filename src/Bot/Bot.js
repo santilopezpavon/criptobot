@@ -25,7 +25,7 @@ class Bot {
         this.asset = configuration.analize.asset.first;
         this.pair = configuration.analize.asset.first + "" +  configuration.analize.asset.second;
         this.timetoresendminutes = 30;
-        this.timetoresendminutesbuy = 4;
+        this.timetoresendminutesbuy = 2;
         this.timeIntervalMinutes = 3;
     }
 
