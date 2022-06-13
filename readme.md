@@ -17,7 +17,23 @@ Rename the config.example.json to config.json, this is the configuration file.
         "to": "email destination", // Email destination of notifications
         "from": "Name from email <email from>", // Email from appears in email        
         "active": true // Active or disable the email service
-    }      
+    } ,
+    "account": {
+        "apiKey": "your api key binance",
+        "apiSecret": "your api secret binance"
+    },
+    "operations": { // The values of default for truncate data for sell and buy operations.
+        "truncate": {
+            "price": 2,
+            "qty": 2
+        }
+    },
+    "analize": {
+        "asset": {
+            "first": "DOT",
+            "second": "BUSD"
+        }
+    }       
 }
 
 ```
