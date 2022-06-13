@@ -39,16 +39,10 @@ Rename the config.example.json to config.json, this is the configuration file.
 ```
 # Use
 
-In the index JS.
-```js
-// Import the boot.
-const Bot = require("./src/Bot/Bot");
+For launch
 
-// Instance the boot with the pair and the time in minutes that the boot wait for resend and email after send one.
-const bot = new Bot("DOTBUSD", 30);
-// Init the interval to see the market, the parameter is the time in second of the interval to see the market.
-bot.init(10);
-
+```bash
+node runbot.js
 ```
 
 # Versions
