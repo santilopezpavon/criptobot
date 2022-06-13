@@ -1,6 +1,8 @@
 const configuration = require("../../config.json");
 const getFilesService = require("./../../src/Memory/Memory");
 const getConnectionSpot = require("./../../src/Connector/ConnectorSpot");
+const getCoinsInformation = require("./../../src/Connector/CoinsInformation");
+
 
 function getOperations() {
     return Operations.getInstance();
@@ -14,6 +16,11 @@ class Operations {
 
     #client;
 
+
+    #qtyTruncate;
+
+    #priceTruncate;
+
     static getInstance() {
         if (!Operations.#instance) {
             Operations.#instance = new Operations()
@@ -24,6 +31,16 @@ class Operations {
     constructor() {
         this.#memory = getFilesService();
         this.#client = getConnectionSpot();
+        
+        this.#qtyTruncate = configuration.operations.truncate.qty;
+        this.#priceTruncate = configuration.operations.truncate.price;
+
+              
+    }
+
+    setTruncateValues(truncateObject) {
+        this.#qtyTruncate = truncateObject.qty;
+        this.#priceTruncate = truncateObject.price;
     }
 
     async buyOperation(dataBuyOperation) {
@@ -144,9 +161,11 @@ class Operations {
     }
 
     #truncate(value, type) {
-        let place = configuration.operations.truncate.price;
+
+
+        let place = this.#priceTruncate;
         if(type == 'qty') {
-            place = configuration.operations.truncate.qty;
+            place = this.#qtyTruncate;
         } 
         return Math.trunc(value * Math.pow(10, place)) / Math.pow(10, place);
     }

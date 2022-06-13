@@ -34,8 +34,16 @@ class Bot {
      * 
      * @param {int} timeInterval in seconds
      */
-    init() {
+    async init() {
         const current = this;
+
+        await this.#coinsInfo.getTruncates(configuration.analize.asset.first + configuration.analize.asset.second).then(function (res) {
+            current.#operations.setTruncateValues({
+                price: res.price,
+                qty: res.qty
+            });
+        });  
+
         current.#action();
         setInterval(function () {
             current.#action();
@@ -85,7 +93,7 @@ class Bot {
             // Hacer la venta 
             console.log("Voy a hacer la venta");
             const price_close = data[data.length - 1]["close"];
-            const recompra = price_close - (price_close * 0.01);
+            const recompra = current.#priceToReBuy(price_close) 
             current.#operations.sellOperation(
                 {
                     "priceReBuy": recompra,
@@ -164,94 +172,23 @@ class Bot {
             "qty": qtyBuy,
             "pair": pairBuy,
         });
-
-
-
-
-        // Checkear el Estado real de la operacion.
-     /*   const symbol = pendingResponse.symbol;
-        const orderId = pendingResponse.orderId;
-
-        const operationUpdated = await current.#operations.getOrderById(symbol, orderId);
-
-
-
-        console.log(pendingResponse);
-        console.log(operationUpdated);*/
-
     }
 
-    #action() {
-        
+    #action() {        
         this.#sell();
-
         this.#buy();
-
-        /*let doAction = false;
-        const current = this;
-
-        if (current.#timeaction == null || current.#timeaction <= Date.now()) {
-            doAction = true;
-        }
-
-        if (doAction == false) {
-            return false;
-        }
-
-        this.#coinsInfo.getHistoricalData(this.pair, "3m").then(async function (data) {
-            current.#indicator.setData(data);
-            
-            if (current.#isUpperShell() == false) {
-                //return false; // TODO: UNCOMMENT
-            }
-
-            current.#timeaction = Date.now() + (current.timetoresendminutes * 60 * 1000);
-
-            // ¿Hay Stock?
-            const qty = await current.#getQty();            
-            if(qty == false) { return false;}
-
-            // ¿Hay Suficiente Stock?
-            const value = await current.#coinsInfo.getTotalValueAsset(current.asset, qty);
-            if(value < 11) { return false;}
-
-            // Hacer la Venta
-
-
-            console.log(value);
-            
-
-            
-            const price_close = data[data.length - 1]["close"];
-            const recompra = price_close - (price_close * 0.01);
-            
-            console.log(
-                {
-                    price: price_close,
-                    upperShell: current.#isUpperShell()
-                }
-            );
-            current.#comunication.sendEmail(
-                "Oportunidad de compra " + current.pair,
-                current.pair + " a precio " + price_close + " para recomprar a " + recompra
-            );     
-
-        });*/
     }
 
     async #getQty() {
         return await this.#account.getStockOf(this.asset);
     }
 
+    
+
     #isUpperShell() {
-        const mfi_long = this.#indicator.getMfi(50);
-        const rsi_long = this.#indicator.getRsi(50);
 
         const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
-
-        console.log(mfi_short[mfi_short.length - 1], rsi_short[rsi_short.length - 1]);
-       
         if (
             mfi_short[mfi_short.length - 1] > 60 &&
             rsi_short[rsi_short.length - 1] > 60
@@ -259,6 +196,28 @@ class Bot {
             return true;
         }
         return false;
+    }
+
+    #priceToReBuy(priceClose) {
+        const mfi_short = this.#indicator.getMfi(16);
+        const rsi_short = this.#indicator.getRsi(16);
+
+        const mfi_short_value = mfi_short[mfi_short.length - 1];
+        const rsi_short_value = rsi_short[rsi_short.length - 1];
+
+        const suma = mfi_short_value + rsi_short_value;
+        this.rentabilidadMovimiento = 0.01;
+        if(suma > 120) {
+            this.rentabilidadMovimiento = 0.01;
+        } else if(suma > 100) {
+            this.rentabilidadMovimiento = 0.01;
+        } else if(suma > 80) {
+            this.rentabilidadMovimiento = 0.006;
+        } else {
+            this.rentabilidadMovimiento = 0.005;
+        }        
+
+        return priceClose - (priceClose * this.rentabilidadMovimiento);
     }
 
 
