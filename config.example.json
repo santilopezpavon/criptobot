@@ -8,5 +8,21 @@
         "to": "email destination",
         "from": "Name from email <email from>",        
         "active": true 
-    }    
+    },
+    "account": {
+        "apiKey": "your api key binance",
+        "apiSecret": "your api secret binance"
+    },
+    "operations": {
+        "truncate": {
+            "price": 2,
+            "qty": 2
+        }
+    },
+    "analize": {
+        "asset": {
+            "first": "DOT",
+            "second": "BUSD"
+        }
+    }       
 }
