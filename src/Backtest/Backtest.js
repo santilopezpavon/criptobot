@@ -54,11 +54,17 @@ class Backtest {
     }
 
     isUpperShell() {
+        const mfi_long = this.#indicator.getMfi(50);
+        const rsi_long = this.#indicator.getRsi(50);
         const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
+
+        
         if (
             mfi_short[mfi_short.length - 1] > 60 &&
-            rsi_short[rsi_short.length - 1] > 60
+            rsi_short[rsi_short.length - 1] > 60 &&
+            mfi_long[mfi_long.length - 1] > 50 &&
+            rsi_long[rsi_long.length - 1] > 50
         ) {
             return true;
         }

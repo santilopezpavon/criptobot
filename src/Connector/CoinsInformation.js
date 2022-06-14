@@ -65,6 +65,66 @@ class CoinsInformation {
         return dataArrayConvert;
     }
 
+    async getCurrentPrice(asset) {
+        const parCoin = asset + "USDT";
+        const historicalData = await this.getHistoricalData(parCoin, "1m");
+        return historicalData[historicalData.length - 1].close;
+    }
+
+    async getTotalValueAsset(asset, qty) {
+        const price = await this.getCurrentPrice(asset);
+        return price * qty;
+    }
+
+    async getFilters(pair) {
+        const url = "https://www.binance.com/api/v1/exchangeInfo";
+        return axios.get(url).then(function (response) {
+            const datos = response.data.symbols;
+            const result = datos.filter(datos => datos.symbol == pair);
+            return result[0].filters;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    async getTruncates(pair) {
+        let truncate = {};
+        await this.getFilters(pair).then(function (res) {            
+    
+            for (let index = 0; index < res.length; index++) {
+                const element = res[index];
+                if(element.filterType == 'PRICE_FILTER') {
+                    let tickSize = element.tickSize;
+                    let decimals = tickSize.split(".");
+                    let position = 0;
+                    for (let j = 0; j < decimals[1].length; j++) {
+                        if(decimals[1][j] == '1') {
+                            position = j + 1;
+                            break;
+                        }                    
+                    }
+                    truncate["price"] = position;
+                }
+    
+                if(element.filterType == 'LOT_SIZE') {
+                    let tickSize = element.stepSize;
+                    let decimals = tickSize.split(".");
+                    let position = 0;
+                    for (let j = 0; j < decimals[1].length; j++) {
+                        if(decimals[1][j] == '1') {
+                            position = j + 1;
+                            break;
+                        }                    
+                    }
+                    truncate["qty"] = position;
+                }
+                
+            }
+    
+        });
+        return truncate;
+    }
+
 
 
 }
