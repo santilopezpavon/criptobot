@@ -31,6 +31,7 @@ class Backtest {
         this.sobreventasNum = 0;
         this.priceSell = 0;
         this.#modulesFunctions = configuration.modulesFunctions;
+        this.sumaVelas = 0;
     }
 
 
@@ -58,6 +59,7 @@ class Backtest {
                         "priceSell": current.priceSell,
                         "velas": velas
                     });
+                    current.sumaVelas = current.sumaVelas + velas;
                     current.priceReBuy = null;
                     current.rentabilidad += current.rentabilidadMovimiento;
                     current.operaciones++;
@@ -82,6 +84,8 @@ class Backtest {
             console.log("Num sobreventas " + current.sobreventasNum);
             console.log("Operaciones " + current.operaciones);
             console.log("Rentabilidad " + current.rentabilidad);
+            
+            console.log("Velas pasadas media " + (current.sumaVelas / current.operaciones));
         });
         
     }
