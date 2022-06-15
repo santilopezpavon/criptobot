@@ -3,6 +3,7 @@ const getIndicator = require("./../../src/Indicators/Indicator");
 const getComunication = require("./../../src/Communication/Communication");
 const getAccount = require("./../../src/Account/Account"); 
 const configuration = require("../../config.json");
+const { bollingerbands } = require("technicalindicators");
 
 class Backtest {
 
@@ -85,6 +86,21 @@ class Backtest {
         const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
 
+        const boolinguer = this.#indicator.getBollingerBands(12);
+        const middle = boolinguer[boolinguer.length - 1].middle;
+        console.log(middle);
+
+        this.rentabilidadMovimiento = ((priceClose - middle) / middle) * 0.3;
+        if(this.rentabilidadMovimiento < 0.005){
+            this.rentabilidadMovimiento = 0.005;
+        }
+
+        if(this.rentabilidadMovimiento > 0.01){
+            this.rentabilidadMovimiento = 0.01;
+        }
+
+
+/*
         const mfi_short_value = mfi_short[mfi_short.length - 1];
         const rsi_short_value = rsi_short[rsi_short.length - 1];
 
@@ -98,7 +114,7 @@ class Backtest {
             this.rentabilidadMovimiento = 0.005;
         } else {
             this.rentabilidadMovimiento = 0.005;
-        }        
+        }        */
 
         return priceClose - (priceClose * this.rentabilidadMovimiento);
     }

@@ -84,6 +84,18 @@ class Indicator {
         return incrementalVolume;
     }
 
+    getBollingerBands(period) {
+        var BB = technicalIndicators.BollingerBands;
+        var input = {
+            period : period, 
+            values : this.#data["close"],
+            stdDev : 2
+                
+        }
+        return BB.calculate(input);
+
+    }
+
     isUpperShell() {      
 
         const mfi_short = this.getMfi(16);

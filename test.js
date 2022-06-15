@@ -3,7 +3,7 @@ const getIndicator = require("./src/Indicators/Indicator");
 
 const coinsInfo = getCoinsInformation();
 const indicator = getIndicator();
-
+/*
 coinsInfo.getHistoricalData("DOTBUSD", "3m").then(async function (data) {
     indicator.setData(data);
     const mfi = indicator.getEMAForProperty("volume", 16);
@@ -11,3 +11,8 @@ coinsInfo.getHistoricalData("DOTBUSD", "3m").then(async function (data) {
 
     console.log(indicator.getIncrementalVolume(16));
 });
+
+
+*/
+
+[]
