@@ -36,6 +36,8 @@ class Backtest {
 
     async init() {
         const current = this;
+        let velas = 0;
+        let ventaHecha = false;
         this.#coinsInfo.getHistoricalData(current.pair, "3m").then(async function (data) {
             for (let index = current.initfrom; index < data.length; index++) {
                 const currentDataPeriod = data.slice(0, index + 1);
@@ -45,27 +47,36 @@ class Backtest {
                 const currentPriceLow = currentDataPeriod[currentDataPeriod.length - 1]["low"];
                 current.currentObject = currentDataPeriod[currentDataPeriod.length - 1];
 
-                let newPrice = false;
+                if(ventaHecha == true) {
+                    velas++;
+                }
+
+                if(current.priceReBuy != null  && current.priceReBuy >= currentPriceLow) {
+                    console.log({
+                        "priceRebuy": current.priceReBuy,
+                        "rentabilidad": current.rentabilidadMovimiento,
+                        "priceSell": current.priceSell,
+                        "velas": velas
+                    });
+                    current.priceReBuy = null;
+                    current.rentabilidad += current.rentabilidadMovimiento;
+                    current.operaciones++;
+                    velas = 0;
+                    ventaHecha = false;
+                   
+                }   
+
                 if(current.isUpperShell()) {         
                     current.sobreventasNum++;                      
                     if(current.priceReBuy == null) {
                         current.priceSell = currentPrice;
                         current.priceReBuy = current.priceToRebuy(currentPrice);
-                        newPrice = true;
+                        velas++;
+                        ventaHecha = true;
                     }                       
                 } 
 
-                if(current.priceReBuy != null && newPrice == false && current.priceReBuy >= currentPriceLow) {
-                    console.log({
-                        "priceRebuy": current.priceReBuy,
-                        "rentabilidad": current.rentabilidadMovimiento,
-                        "priceSell": current.priceSell
-                    });
-                    current.priceReBuy = null;
-                    current.rentabilidad += current.rentabilidadMovimiento;
-                    current.operaciones++;
-                   
-                }   
+                
             }
             console.log("Pair " + current.pair);
             console.log("Num sobreventas " + current.sobreventasNum);
@@ -84,40 +95,6 @@ class Backtest {
         const data = this.#modulesFunctions.priceToRebuyFunction(priceClose, this.#indicator);
         this.rentabilidadMovimiento = data.rentabilidadMovimiento;
         return data.price;
-        /*const mfi_short = this.#indicator.getMfi(16);
-        const rsi_short = this.#indicator.getRsi(16);
-
-        const boolinguer = this.#indicator.getBollingerBands(12);
-        const middle = boolinguer[boolinguer.length - 1].middle;
-        console.log(middle);
-
-        this.rentabilidadMovimiento = ((priceClose - middle) / middle) * 0.3;
-        if(this.rentabilidadMovimiento < 0.005){
-            this.rentabilidadMovimiento = 0.005;
-        }
-
-        if(this.rentabilidadMovimiento > 0.01){
-            this.rentabilidadMovimiento = 0.01;
-        }*/
-
-
-/*
-        const mfi_short_value = mfi_short[mfi_short.length - 1];
-        const rsi_short_value = rsi_short[rsi_short.length - 1];
-
-        const suma = mfi_short_value + rsi_short_value;
-        this.rentabilidadMovimiento = 0.01;
-        if(suma > 120) {
-            this.rentabilidadMovimiento = 0.008;
-        } else if(suma > 100) {
-            this.rentabilidadMovimiento = 0.005;
-        } else if(suma > 80) {
-            this.rentabilidadMovimiento = 0.005;
-        } else {
-            this.rentabilidadMovimiento = 0.005;
-        }        */
-
-       // return priceClose - (priceClose * this.rentabilidadMovimiento);
     }
 
 

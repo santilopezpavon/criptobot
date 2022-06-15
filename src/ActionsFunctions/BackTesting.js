@@ -6,8 +6,8 @@ function isUpperSellFunction(indicator) {
     const volumeIncrementPercent = indicator.getIncrementalVolume(16);
     
     if (
-        mfi_short[mfi_short.length - 1] > 70 &&
-        rsi_short[rsi_short.length - 1] > 70 &&
+        mfi_short[mfi_short.length - 1] > 65 &&
+        rsi_short[rsi_short.length - 1] > 65 &&
         mfi_long[mfi_long.length - 1] > 50 &&
         rsi_long[rsi_long.length - 1] > 50 && 
         volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.50
@@ -30,8 +30,7 @@ function priceToRebuyFunction(priceClose, indicator) {
     if(rentabilidadMovimiento > 0.015){
         rentabilidadMovimiento = 0.015;
     }
-    // https://www.freecodecamp.org/news/telegram-push-notifications-58477e71b2c2/
-
+    //rentabilidadMovimiento = 0.005;
     return {
         "price": priceClose - (priceClose * rentabilidadMovimiento),
         "rentabilidadMovimiento": rentabilidadMovimiento
