@@ -22,7 +22,8 @@
     "analize": {
         "asset": {
             "first": "DOT",
-            "second": "BUSD"
+            "second": "BUSD",
+            "maxtradeUnits": 10
         }
     }       
 }

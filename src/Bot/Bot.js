@@ -21,12 +21,16 @@ class Bot {
 
     #operations = getOperations();
 
+    #maxtradeUnits = null;
+
+
     constructor() {
         this.asset = configuration.analize.asset.first;
         this.pair = configuration.analize.asset.first + "" +  configuration.analize.asset.second;
         this.timetoresendminutes = 30;
         this.timetoresendminutesbuy = 2;
         this.timeIntervalMinutes = 3;
+        this.#maxtradeUnits = configuration.analize.asset.maxtradeUnits;
     }
 
 
@@ -78,8 +82,12 @@ class Bot {
             console.log("Voy a mirar si hay Stock para vender");
 
                 // ¿Hay Stock?
-                const qty = await current.#getQty();            
+                let qty = await current.#getQty();            
                 if(qty == false) { return false;}
+
+                if(qty > current.#maxtradeUnits) {
+                    qty = current.#maxtradeUnits;
+                }
 
 
             current.#timeactionSell = Date.now() + (current.timetoresendminutes * 60 * 1000);
@@ -192,15 +200,18 @@ class Bot {
         const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
         const volumeIncrementPercent = this.#indicator.getIncrementalVolume(20);
-        console.log(
-            {
-                "mfi_short": mfi_short[mfi_short.length - 1],
-                "rsi_short": rsi_short[rsi_short.length - 1],
-                "mfi_long": mfi_long[mfi_long.length - 1],
-                "rsi_long": rsi_long[rsi_long.length - 1],
-                "volumeIncrementPercent": volumeIncrementPercent[volumeIncrementPercent.length - 1]
-            }
-        );
+
+        if(configuration.verbose.statusIndicator == true) {
+            console.log(
+                {
+                    "mfi_short": mfi_short[mfi_short.length - 1],
+                    "rsi_short": rsi_short[rsi_short.length - 1],
+                    "mfi_long": mfi_long[mfi_long.length - 1],
+                    "rsi_long": rsi_long[rsi_long.length - 1],
+                    "volumeIncrementPercent": volumeIncrementPercent[volumeIncrementPercent.length - 1]
+                }
+            );
+        }       
         
         if (
             mfi_short[mfi_short.length - 1] > 60 &&
@@ -225,28 +236,9 @@ class Bot {
 
         if(this.rentabilidadMovimiento > 0.01){
             this.rentabilidadMovimiento = 0.01;
-        }
-        /*const mfi_short = this.#indicator.getMfi(16);
-        const rsi_short = this.#indicator.getRsi(16);
-
-        const mfi_short_value = mfi_short[mfi_short.length - 1];
-        const rsi_short_value = rsi_short[rsi_short.length - 1];
-
-        const suma = mfi_short_value + rsi_short_value;
-        this.rentabilidadMovimiento = 0.01;
-        if(suma > 120) {
-            this.rentabilidadMovimiento = 0.01;
-        } else if(suma > 100) {
-            this.rentabilidadMovimiento = 0.01;
-        } else if(suma > 80) {
-            this.rentabilidadMovimiento = 0.006;
-        } else {
-            this.rentabilidadMovimiento = 0.005;
-        }        */
+        }  
 
         return priceClose - (priceClose * this.rentabilidadMovimiento);
-
-
     }
 
 
