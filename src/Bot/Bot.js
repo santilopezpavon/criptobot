@@ -23,14 +23,17 @@ class Bot {
 
     #maxtradeUnits = null;
 
+    #modulesFunctions = {};
 
-    constructor() {
+
+    constructor(configurationBot) {
         this.asset = configuration.analize.asset.first;
         this.pair = configuration.analize.asset.first + "" +  configuration.analize.asset.second;
         this.timetoresendminutes = 30;
         this.timetoresendminutesbuy = 2;
         this.timeIntervalMinutes = 3;
         this.#maxtradeUnits = configuration.analize.asset.maxtradeUnits;
+        this.#modulesFunctions = configurationBot.modulesFunctions;
     }
 
 
@@ -195,50 +198,14 @@ class Bot {
 
     #isUpperShell() {
 
-        const mfi_long = this.#indicator.getMfi(50);
-        const rsi_long = this.#indicator.getRsi(50);
-        const mfi_short = this.#indicator.getMfi(16);
-        const rsi_short = this.#indicator.getRsi(16);
-        const volumeIncrementPercent = this.#indicator.getIncrementalVolume(20);
+        return this.#modulesFunctions.isUpperSellFunction(this.#indicator);
 
-        if(configuration.verbose.statusIndicator == true) {
-            console.log(
-                {
-                    "mfi_short": mfi_short[mfi_short.length - 1],
-                    "rsi_short": rsi_short[rsi_short.length - 1],
-                    "mfi_long": mfi_long[mfi_long.length - 1],
-                    "rsi_long": rsi_long[rsi_long.length - 1],
-                    "volumeIncrementPercent": volumeIncrementPercent[volumeIncrementPercent.length - 1]
-                }
-            );
-        }       
-        
-        if (
-            mfi_short[mfi_short.length - 1] > 60 &&
-            rsi_short[rsi_short.length - 1] > 60 &&
-            mfi_long[mfi_long.length - 1] > 40 &&
-            rsi_long[rsi_long.length - 1] > 50 && 
-            volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.3
-        ) {
-            return true;
-        }
-        return false;
     }
 
     #priceToReBuy(priceClose) {
-        const boolinguer = this.#indicator.getBollingerBands(12);
-        const middle = boolinguer[boolinguer.length - 1].middle;
-
-        this.rentabilidadMovimiento = ((priceClose - middle) / middle) * 0.3;
-        if(this.rentabilidadMovimiento < 0.005){
-            this.rentabilidadMovimiento = 0.005;
-        }
-
-        if(this.rentabilidadMovimiento > 0.01){
-            this.rentabilidadMovimiento = 0.01;
-        }  
-
-        return priceClose - (priceClose * this.rentabilidadMovimiento);
+        const data = this.#modulesFunctions.priceToRebuyFunction(priceClose, this.#indicator);
+        this.rentabilidadMovimiento = data.rentabilidadMovimiento;
+        return data.price;
     }
 
 

@@ -1,9 +1,17 @@
 
 const Backtest = require("./src/Backtest/Backtest");
+const {
+    isUpperSellFunction,
+    priceToRebuyFunction
+} = require("./src/ActionsFunctions/BackTesting");
 
 const backtest = new Backtest({
     "pair": "DOTBUSD",
-    "initfrom": 51
+    "initfrom": 51,
+    "modulesFunctions": {
+        "isUpperSellFunction": isUpperSellFunction,
+        "priceToRebuyFunction": priceToRebuyFunction
+    }
 });
 backtest.init();
 

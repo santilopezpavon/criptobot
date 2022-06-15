@@ -5,6 +5,8 @@ const getAccount = require("./../../src/Account/Account");
 const configuration = require("../../config.json");
 const { bollingerbands } = require("technicalindicators");
 
+
+
 class Backtest {
 
     #coinsInfo = getCoinsInformation();
@@ -14,6 +16,8 @@ class Backtest {
     #comunication = getComunication();
 
     #account = getAccount();
+
+    #modulesFunctions = {};
 
 
     constructor(configuration) {
@@ -25,6 +29,8 @@ class Backtest {
         this.rentabilidadMovimiento = 0;
         this.currentObject = {};
         this.sobreventasNum = 0;
+        this.priceSell = 0;
+        this.#modulesFunctions = configuration.modulesFunctions;
     }
 
 
@@ -43,15 +49,22 @@ class Backtest {
                 if(current.isUpperShell()) {         
                     current.sobreventasNum++;                      
                     if(current.priceReBuy == null) {
+                        current.priceSell = currentPrice;
                         current.priceReBuy = current.priceToRebuy(currentPrice);
                         newPrice = true;
                     }                       
                 } 
 
-                if(newPrice == false && current.priceReBuy >= currentPriceLow) {
+                if(current.priceReBuy != null && newPrice == false && current.priceReBuy >= currentPriceLow) {
+                    console.log({
+                        "priceRebuy": current.priceReBuy,
+                        "rentabilidad": current.rentabilidadMovimiento,
+                        "priceSell": current.priceSell
+                    });
                     current.priceReBuy = null;
                     current.rentabilidad += current.rentabilidadMovimiento;
                     current.operaciones++;
+                   
                 }   
             }
             console.log("Pair " + current.pair);
@@ -62,28 +75,16 @@ class Backtest {
         
     }
 
-    isUpperShell() {
-        const mfi_long = this.#indicator.getMfi(50);
-        const rsi_long = this.#indicator.getRsi(50);
-        const mfi_short = this.#indicator.getMfi(16);
-        const rsi_short = this.#indicator.getRsi(16);
-        const volumeIncrementPercent = this.#indicator.getIncrementalVolume(16);
-
-        
-        if (
-            mfi_short[mfi_short.length - 1] > 60 &&
-            rsi_short[rsi_short.length - 1] > 60 &&
-            mfi_long[mfi_long.length - 1] > 40 &&
-            rsi_long[rsi_long.length - 1] > 40 && 
-            volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.3
-        ) {
-            return true;
-        } 
-        return false;
+    isUpperShell() {       
+        return this.#modulesFunctions.isUpperSellFunction(this.#indicator);
     }
 
     priceToRebuy(priceClose) {
-        const mfi_short = this.#indicator.getMfi(16);
+
+        const data = this.#modulesFunctions.priceToRebuyFunction(priceClose, this.#indicator);
+        this.rentabilidadMovimiento = data.rentabilidadMovimiento;
+        return data.price;
+        /*const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
 
         const boolinguer = this.#indicator.getBollingerBands(12);
@@ -97,7 +98,7 @@ class Backtest {
 
         if(this.rentabilidadMovimiento > 0.01){
             this.rentabilidadMovimiento = 0.01;
-        }
+        }*/
 
 
 /*
@@ -116,7 +117,7 @@ class Backtest {
             this.rentabilidadMovimiento = 0.005;
         }        */
 
-        return priceClose - (priceClose * this.rentabilidadMovimiento);
+       // return priceClose - (priceClose * this.rentabilidadMovimiento);
     }
 
 
