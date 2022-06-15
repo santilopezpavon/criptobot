@@ -68,7 +68,7 @@ class Indicator {
 
     getEMAForProperty(property, period) {
         const values = this.#data[property];  
-        return technicalIndicators.EMA.calculate({period : period, values : values}); 
+        return technicalIndicators.SMA.calculate({period : period, values : values}); 
 
     }
 

@@ -191,13 +191,21 @@ class Bot {
         const rsi_long = this.#indicator.getRsi(50);
         const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
-        const volumeIncrementPercent = this.#indicator.getIncrementalVolume(16);
-
+        const volumeIncrementPercent = this.#indicator.getIncrementalVolume(20);
+        console.log(
+            {
+                "mfi_short": mfi_short[mfi_short.length - 1],
+                "rsi_short": rsi_short[rsi_short.length - 1],
+                "mfi_long": mfi_long[mfi_long.length - 1],
+                "rsi_long": rsi_long[rsi_long.length - 1],
+                "volumeIncrementPercent": volumeIncrementPercent[volumeIncrementPercent.length - 1]
+            }
+        );
         
         if (
             mfi_short[mfi_short.length - 1] > 60 &&
             rsi_short[rsi_short.length - 1] > 60 &&
-            mfi_long[mfi_long.length - 1] > 50 &&
+            mfi_long[mfi_long.length - 1] > 40 &&
             rsi_long[rsi_long.length - 1] > 50 && 
             volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.3
         ) {
@@ -209,7 +217,6 @@ class Bot {
     #priceToReBuy(priceClose) {
         const boolinguer = this.#indicator.getBollingerBands(12);
         const middle = boolinguer[boolinguer.length - 1].middle;
-        console.log(middle);
 
         this.rentabilidadMovimiento = ((priceClose - middle) / middle) * 0.3;
         if(this.rentabilidadMovimiento < 0.005){
