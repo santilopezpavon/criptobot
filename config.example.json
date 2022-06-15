@@ -25,5 +25,8 @@
             "second": "BUSD",
             "maxtradeUnits": 10
         }
-    }       
+    },
+    "verbose": {
+        "statusIndicator": true
+    }          
 }
