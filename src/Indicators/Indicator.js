@@ -66,6 +66,24 @@ class Indicator {
        return MFI.calculate(inputRSI)
     }
 
+    getEMAForProperty(property, period) {
+        const values = this.#data[property];  
+        return technicalIndicators.EMA.calculate({period : period, values : values}); 
+
+    }
+
+    getIncrementalVolume(period){
+        const volumenEma = this.getEMAForProperty("volume", period);
+        let count = 0;
+        let incrementalVolume = [];
+        for (let index = period - 1; index < this.#data["volume"].length; index++) {
+            const element = this.#data["volume"][index];
+            incrementalVolume[count] = (element - volumenEma[count]) / volumenEma[count];
+            count++;            
+        }
+        return incrementalVolume;
+    }
+
     isUpperShell() {      
 
         const mfi_short = this.getMfi(16);

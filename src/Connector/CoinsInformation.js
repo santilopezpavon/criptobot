@@ -53,14 +53,30 @@ class CoinsInformation {
     #convertData(dataArray) {
         let dataArrayConvert = [];
         dataArray.map(function (element) {
-            dataArrayConvert.push({
+            let provisionalObject = {
                 high: parseFloat(element[2]),
                 low: parseFloat(element[3]),
                 close: parseFloat(element[4]),
                 volume: parseFloat(element[5]),
                 numtrades: parseFloat(element[8]),
-                open: parseFloat(element[1]),
-            });
+                open: parseFloat(element[1])
+            };
+
+            provisionalObject["bullish"] = provisionalObject.open < provisionalObject.close;
+
+            if(provisionalObject["bullish"] === true) {
+                provisionalObject["lowerShadow"] = provisionalObject.open - provisionalObject.low;
+                provisionalObject["higherShadow"] = provisionalObject.high - provisionalObject.close;
+                provisionalObject["body"] = provisionalObject.close - provisionalObject.open;
+                provisionalObject["total"] = provisionalObject.high - provisionalObject.low;
+            } else {
+                provisionalObject["lowerShadow"] = provisionalObject.close - provisionalObject.low;
+                provisionalObject["higherShadow"] = provisionalObject.high - provisionalObject.open;
+                provisionalObject["body"] = provisionalObject.open - provisionalObject.close;
+                provisionalObject["total"] = provisionalObject.high - provisionalObject.low;
+            }
+   
+            dataArrayConvert.push(provisionalObject);
         });
         return dataArrayConvert;
     }

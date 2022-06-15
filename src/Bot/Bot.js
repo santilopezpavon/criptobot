@@ -88,7 +88,7 @@ class Bot {
 
             // ¿Hay Suficiente Stock?
             const value = await current.#coinsInfo.getTotalValueAsset(current.asset, qty);
-            if(value < 11) { return false;}
+            if(value < 10) { return false;}
 
             // Hacer la venta 
             console.log("Voy a hacer la venta");

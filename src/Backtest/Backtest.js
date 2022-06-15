@@ -22,6 +22,7 @@ class Backtest {
         this.operaciones = 0;
         this.rentabilidad = 0;
         this.rentabilidadMovimiento = 0;
+        this.currentObject = {};
     }
 
 
@@ -32,6 +33,7 @@ class Backtest {
                 const currentDataPeriod = data.slice(0, index + 1);
                 current.#indicator.setData(currentDataPeriod);
                 const currentPrice = currentDataPeriod[currentDataPeriod.length - 1]["close"];
+                current.currentObject = currentDataPeriod[currentDataPeriod.length - 1];
                 if(current.isUpperShell()) {                    
                     if(current.priceReBuy == null) {
                         current.priceReBuy = current.priceToRebuy(currentPrice);
@@ -58,16 +60,19 @@ class Backtest {
         const rsi_long = this.#indicator.getRsi(50);
         const mfi_short = this.#indicator.getMfi(16);
         const rsi_short = this.#indicator.getRsi(16);
+        const volumeIncrementPercent = this.#indicator.getIncrementalVolume(16);
 
         
         if (
-            mfi_short[mfi_short.length - 1] > 60 &&
-            rsi_short[rsi_short.length - 1] > 60 &&
-            mfi_long[mfi_long.length - 1] > 50 &&
-            rsi_long[rsi_long.length - 1] > 50
+            mfi_short[mfi_short.length - 1] > 40 &&
+            rsi_short[rsi_short.length - 1] > 40 &&
+            mfi_long[mfi_long.length - 1] > 40 &&
+            rsi_long[rsi_long.length - 1] > 40 //&& 
+            //volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.3
         ) {
+
             return true;
-        }
+        } 
         return false;
     }
 

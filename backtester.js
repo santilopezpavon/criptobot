@@ -7,7 +7,7 @@ const backtest = new Backtest({
 });
 backtest.init();
 
-
+/*
 const backtest2 = new Backtest({
     "pair": "GLMRBUSD",
     "initfrom": 51
@@ -26,4 +26,4 @@ const backtest4 = new Backtest({
     "pair": "ETHBUSD",
     "initfrom": 51
 });
-backtest4.init();
+backtest4.init();*/
