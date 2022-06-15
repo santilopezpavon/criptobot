@@ -54,6 +54,15 @@ class Account {
         });
     }
 
+    async getTrades(pair) {
+        return this.#client.myTrades(pair).then(function (response) {
+            return response.data;
+        }).catch(function (error) {
+            return false;
+        })
+    }
+
+
 
     
 }
