@@ -23,6 +23,7 @@ class Backtest {
         this.rentabilidad = 0;
         this.rentabilidadMovimiento = 0;
         this.currentObject = {};
+        this.sobreventasNum = 0;
     }
 
 
@@ -33,22 +34,27 @@ class Backtest {
                 const currentDataPeriod = data.slice(0, index + 1);
                 current.#indicator.setData(currentDataPeriod);
                 const currentPrice = currentDataPeriod[currentDataPeriod.length - 1]["close"];
+                //const currentPriceHigh = currentDataPeriod[currentDataPeriod.length - 1]["high"];
+                const currentPriceLow = currentDataPeriod[currentDataPeriod.length - 1]["low"];
                 current.currentObject = currentDataPeriod[currentDataPeriod.length - 1];
-                if(current.isUpperShell()) {                    
+
+                let newPrice = false;
+                if(current.isUpperShell()) {         
+                    current.sobreventasNum++;                      
                     if(current.priceReBuy == null) {
                         current.priceReBuy = current.priceToRebuy(currentPrice);
+                        newPrice = true;
+                    }                       
+                } 
 
-                    }
-
-                    if(current.priceReBuy >= currentPrice) {
-
-                        current.priceReBuy = null;
-                        current.rentabilidad += current.rentabilidadMovimiento;
-                        current.operaciones++;
-                    }                   
-                }
+                if(newPrice == false && current.priceReBuy >= currentPriceLow) {
+                    current.priceReBuy = null;
+                    current.rentabilidad += current.rentabilidadMovimiento;
+                    current.operaciones++;
+                }   
             }
             console.log("Pair " + current.pair);
+            console.log("Num sobreventas " + current.sobreventasNum);
             console.log("Operaciones " + current.operaciones);
             console.log("Rentabilidad " + current.rentabilidad);
         });
@@ -64,13 +70,12 @@ class Backtest {
 
         
         if (
-            mfi_short[mfi_short.length - 1] > 40 &&
-            rsi_short[rsi_short.length - 1] > 40 &&
-            mfi_long[mfi_long.length - 1] > 40 &&
-            rsi_long[rsi_long.length - 1] > 40 //&& 
-            //volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.3
+            mfi_short[mfi_short.length - 1] > 60 &&
+            rsi_short[rsi_short.length - 1] > 60 &&
+            mfi_long[mfi_long.length - 1] > 50 &&
+            rsi_long[rsi_long.length - 1] > 50 && 
+            volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.3
         ) {
-
             return true;
         } 
         return false;
@@ -86,11 +91,11 @@ class Backtest {
         const suma = mfi_short_value + rsi_short_value;
         this.rentabilidadMovimiento = 0.01;
         if(suma > 120) {
-            this.rentabilidadMovimiento = 0.012;
+            this.rentabilidadMovimiento = 0.008;
         } else if(suma > 100) {
-            this.rentabilidadMovimiento = 0.01;
+            this.rentabilidadMovimiento = 0.005;
         } else if(suma > 80) {
-            this.rentabilidadMovimiento = 0.006;
+            this.rentabilidadMovimiento = 0.005;
         } else {
             this.rentabilidadMovimiento = 0.005;
         }        
