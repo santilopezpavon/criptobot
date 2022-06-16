@@ -12,7 +12,7 @@ function isUpperSellFunction(indicator) {
 }
 
 function priceToRebuyFunction(priceClose, indicator) {
-    const min = 0.07;
+    const min = 0.007;
     const max = 0.01;
     const multiplicadorBoolinger = 0.8;
 
