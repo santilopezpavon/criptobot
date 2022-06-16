@@ -3,7 +3,7 @@ const Bot = require("./src/Bot/Bot");
 const {
     isUpperSellFunction,
     priceToRebuyFunction
-} = require("./src/ActionsFunctions/RealBot");
+} = require("./src/ActionsFunctions/BackTesting");
 
 const bot = new Bot({
     "modulesFunctions": {

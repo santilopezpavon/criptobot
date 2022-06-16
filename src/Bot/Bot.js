@@ -31,7 +31,7 @@ class Bot {
         this.pair = configuration.analize.asset.first + "" +  configuration.analize.asset.second;
         this.timetoresendminutes = 30;
         this.timetoresendminutesbuy = 2;
-        this.timeIntervalMinutes = 3;
+        this.timeIntervalMinutes = 1;
         this.#maxtradeUnits = configuration.analize.asset.maxtradeUnits;
         this.#modulesFunctions = configurationBot.modulesFunctions;
     }

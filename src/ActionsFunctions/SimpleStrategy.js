@@ -7,11 +7,11 @@ function isUpperSellFunction(indicator) {
     
 
     if (
-        mfi_short[mfi_short.length - 1] > 65 &&
-        rsi_short[rsi_short.length - 1] > 65 &&
+        mfi_short[mfi_short.length - 1] > 60 &&
+        rsi_short[rsi_short.length - 1] > 60 //&&
        // mfi_long[mfi_long.length - 1] > 50 &&
         //rsi_long[rsi_long.length - 1] > 50 && 
-        volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.50
+        //volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.50
     ) {
         return true;
     } 
