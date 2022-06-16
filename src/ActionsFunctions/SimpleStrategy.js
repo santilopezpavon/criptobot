@@ -1,17 +1,10 @@
 function isUpperSellFunction(indicator) {
-    const mfi_long = indicator.getMfi(50);
-    const rsi_long = indicator.getRsi(50);
     const mfi_short = indicator.getMfi(16);
-    const rsi_short = indicator.getRsi(16);
-    const volumeIncrementPercent = indicator.getIncrementalVolume(16);
-    
+    const volumeIncrementPercent = indicator.getIncrementalVolume(16);  
 
     if (
-        mfi_short[mfi_short.length - 1] > 60 &&
-        rsi_short[rsi_short.length - 1] > 60 //&&
-       // mfi_long[mfi_long.length - 1] > 50 &&
-        //rsi_long[rsi_long.length - 1] > 50 && 
-        //volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.50
+        mfi_short[mfi_short.length - 1] > 65 &&
+        volumeIncrementPercent[volumeIncrementPercent.length - 1] > 0.50
     ) {
         return true;
     } 
@@ -19,13 +12,17 @@ function isUpperSellFunction(indicator) {
 }
 
 function priceToRebuyFunction(priceClose, indicator) {
-    const min = 0.08;
-    const max = 0.012;
+    const min = 0.07;
+    const max = 0.01;
+    const multiplicadorBoolinger = 0.8;
 
     const boolinguer = indicator.getBollingerBands(10);
     const middle = boolinguer[boolinguer.length - 1].middle;
 
-    let rentabilidadMovimiento = ((priceClose - middle) / middle) * 1;
+    const mfi_short = indicator.getMfi(16);
+    const volumeIncrementPercent = indicator.getIncrementalVolume(16);  
+
+    let rentabilidadMovimiento = ((priceClose - middle) / middle) * multiplicadorBoolinger;
     if(rentabilidadMovimiento < min){
         rentabilidadMovimiento = min;
     }
