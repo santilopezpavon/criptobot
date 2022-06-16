@@ -7,7 +7,13 @@
         "pass": "password smtp",
         "to": "email destination",
         "from": "Name from email <email from>",        
-        "active": true 
+        "host": "in-v3.mailjet.com",
+        "port" : 587,
+        "secure": false,
+        "active": true,
+        "notification": {
+            "operations": true
+        }
     },
     "account": {
         "apiKey": "your api key binance",
