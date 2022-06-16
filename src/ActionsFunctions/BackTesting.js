@@ -18,17 +18,19 @@ function isUpperSellFunction(indicator) {
 }
 
 function priceToRebuyFunction(priceClose, indicator) {
+    const min = 0.08;
+    const max = 0.01;
 
     const boolinguer = indicator.getBollingerBands(10);
     const middle = boolinguer[boolinguer.length - 1].middle;
 
     let rentabilidadMovimiento = ((priceClose - middle) / middle) * 1;
-    if(rentabilidadMovimiento < 0.005){
-        rentabilidadMovimiento = 0.005;
+    if(rentabilidadMovimiento < min){
+        rentabilidadMovimiento = min;
     }
 
-    if(rentabilidadMovimiento > 0.015){
-        rentabilidadMovimiento = 0.015;
+    if(rentabilidadMovimiento > max){
+        rentabilidadMovimiento = max;
     }
     //rentabilidadMovimiento = 0.005;
     return {

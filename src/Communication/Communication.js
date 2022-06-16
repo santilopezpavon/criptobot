@@ -17,13 +17,15 @@ class Comunication {
     }
 
     sendEmail(subject, mensaje) {
+
         if(configuration.email.active == false) {
             return false;
         }
+
         let transporter = nodemailer.createTransport({
-            host: "in-v3.mailjet.com",
-            port: 587,
-            secure: false, // true for 465, false for other ports
+            host: configuration.email.host,
+            port: configuration.email.port,
+            secure: configuration.email.secure, // true for 465, false for other ports
             auth: {
               user: configuration.email.user, // generated ethereal user
               pass: configuration.email.pass, // generated ethereal password
@@ -37,6 +39,27 @@ class Comunication {
             subject: subject,
             text: mensaje, 
         });
+    }
+
+
+    sendEmailOperationBuy() {
+        if(configuration.email.notification.operations == false) {
+            return false;
+        }
+        this.sendEmail(
+            "Operación de compra " + configuration.analize.asset.first,
+            "Se ha realizado una operación de compra " + configuration.analize.asset.first
+        );
+    }
+
+    sendEmailOperationSell() {
+        if(configuration.email.notification.operations == false) {
+            return false;
+        }
+        this.sendEmail(
+            "Operación de venta " + configuration.analize.asset.first,
+            "Se ha realizado una operación de venta " + configuration.analize.asset.first
+        );
     }
 }
 module.exports = getComunication;

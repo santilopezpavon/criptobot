@@ -114,6 +114,8 @@ class Bot {
                     "totalSell": price_close * qty
                 }
             ); 
+
+            current.#comunication.sendEmailOperationSell();
             
             console.log("Venta hecha");
             console.log({
@@ -176,7 +178,7 @@ class Bot {
                 "pair": pairBuy,
             }
         );  
-
+        current.#comunication.sendEmailOperationBuy();
         console.log("He comprado");
         console.log({
             "priceBuy": buyPrice,

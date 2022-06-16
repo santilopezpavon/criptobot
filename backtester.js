@@ -3,7 +3,7 @@ const Backtest = require("./src/Backtest/Backtest");
 const {
     isUpperSellFunction,
     priceToRebuyFunction
-} = require("./src/ActionsFunctions/RealBot");
+} = require("./src/ActionsFunctions/BackTesting");
 
 const backtest = new Backtest({
     "pair": "DOTBUSD",
