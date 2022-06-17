@@ -32,6 +32,7 @@ class Backtest {
         this.priceSell = 0;
         this.#modulesFunctions = configuration.modulesFunctions;
         this.sumaVelas = 0;
+        this.results = {};
     }
 
 
@@ -39,7 +40,7 @@ class Backtest {
         const current = this;
         let velas = 0;
         let ventaHecha = false;
-        this.#coinsInfo.getHistoricalData(current.pair, "3m").then(async function (data) {
+        await this.#coinsInfo.getHistoricalData(current.pair, "3m").then(async function (data) {
             for (let index = current.initfrom; index < data.length; index++) {
                 const currentDataPeriod = data.slice(0, index + 1);
                 current.#indicator.setData(currentDataPeriod);
@@ -80,12 +81,17 @@ class Backtest {
 
                 
             }
-            console.log("Pair " + current.pair);
-            console.log("Num sobreventas " + current.sobreventasNum);
-            console.log("Operaciones " + current.operaciones);
-            console.log("Rentabilidad " + current.rentabilidad);
-            
-            console.log("Velas pasadas media " + (current.sumaVelas / current.operaciones));
+          
+
+            current.results = {
+                "Pair": current.pair,
+                "Num sobreventas": current.sobreventasNum,
+                "Operaciones": current.operaciones,
+                "Rentabilidad": current.rentabilidad,
+                "Velas pasadas media": (current.sumaVelas / current.operaciones)
+            }
+
+            console.table(current.results);
         });
         
     }
