@@ -47,8 +47,8 @@ class Comunication {
             return false;
         }
         this.sendEmail(
-            "Operación de compra " + configuration.analize.asset.first,
-            "Se ha realizado una operación de compra " + configuration.analize.asset.first
+            "Operación de compra programada " + configuration.analize.asset.first,
+            "Se ha programado una operación de compra " + configuration.analize.asset.first
         );
     }
 
@@ -57,10 +57,11 @@ class Comunication {
             return false;
         }
         this.sendEmail(
-            "Operación de venta " + configuration.analize.asset.first,
-            "Se ha realizado una operación de venta " + configuration.analize.asset.first
+            "Operación de venta programada " + configuration.analize.asset.first,
+            "Se ha programado una operación de venta " + configuration.analize.asset.first
         );
     }
+    
 }
 module.exports = getComunication;
 

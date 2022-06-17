@@ -2,6 +2,7 @@ const configuration = require("../../config.json");
 const getFilesService = require("./../../src/Memory/Memory");
 const getConnectionSpot = require("./../../src/Connector/ConnectorSpot");
 const getCoinsInformation = require("./../../src/Connector/CoinsInformation");
+const getComunication = require("./../../src/Communication/Communication");
 
 
 function getOperations() {
@@ -16,6 +17,7 @@ class Operations {
 
     #client;
 
+    #comunication
 
     #qtyTruncate;
 
@@ -34,6 +36,7 @@ class Operations {
         
         this.#qtyTruncate = configuration.operations.truncate.qty;
         this.#priceTruncate = configuration.operations.truncate.price;
+        this. #comunication  = getComunication();
 
               
     }
@@ -58,7 +61,8 @@ class Operations {
         console.log("Order real");
         console.log(order);
         return current.#client.newOrder(dataBuyOperation.pair, "BUY", 'LIMIT', order).then(function (response) {
-            current.#memory.saveFile({});            
+            current.#memory.saveFile({});          
+            current.#comunication.sendEmailOperationBuy();  
             return response;
         }).catch(function (error) {
             console.log(error);
@@ -87,6 +91,7 @@ class Operations {
                 "response": response.data,
                 "dataSellOperation": dataSellOperation
             });            
+            current.#comunication.sendEmailOperationSell();  
             return response;
         }).catch(function (error) {
             console.log(error);
@@ -162,32 +167,12 @@ class Operations {
 
     #truncate(value, type) {
 
-
         let place = this.#priceTruncate;
         if(type == 'qty') {
             place = this.#qtyTruncate;
         } 
         return Math.trunc(value * Math.pow(10, place)) / Math.pow(10, place);
     }
-
-    
-
-    /*async createOrder(order, type = "BUY") {
-        if (order) {
-            const symbol = order.par;
-            delete order.par;
-            order["timeInForce"] = "GTC";
-            return this.#client.newOrder(symbol, type, 'LIMIT', order).then(function (response) {
-                return response;
-            }).catch(function (error) {
-                console.log(error);
-                return error;
-            });
-        } else {
-            return false;
-        }
-    }*/
-
    
 
 }

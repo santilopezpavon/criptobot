@@ -1,6 +1,5 @@
 const getCoinsInformation = require("../Connector/CoinsInformation");
 const getIndicator = require("./../../src/Indicators/Indicator");
-const getComunication = require("./../../src/Communication/Communication");
 const getAccount = require("./../../src/Account/Account"); 
 const getOperations = require("./../../src/Operations/Operations"); 
 const configuration = require("../../config.json");
@@ -11,8 +10,6 @@ class Bot {
 
     #indicator = getIndicator();
 
-    #comunication = getComunication();
-
     #account = getAccount();
 
     #timeactionSell = null;
@@ -21,7 +18,7 @@ class Bot {
 
     #operations = getOperations();
 
-    #maxtradeUnits = null;
+    #potectedQty = null;
 
     #modulesFunctions = {};
 
@@ -38,8 +35,8 @@ class Bot {
 
 
     /**
-     * 
-     * @param {int} timeInterval in seconds
+     * Function to initialize the Bot.
+     * This function runs in interval, and execute the rest of funcionalities.
      */
     async init() {
         const current = this;
@@ -57,25 +54,20 @@ class Bot {
         }, current.timeIntervalMinutes * 60 * 1000);
     }
 
+    /**
+     * This functions verify the posibility of do a Sell Operation, and if is possible
+     * runs the operation in Binance account. 
+     */
     async #sell() {
         let doAction = false;
         const current = this;
 
-        if (current.#timeactionSell == null || current.#timeactionSell <= Date.now()) {
-            doAction = true;
-        }
+        if (current.#timeactionSell == null || current.#timeactionSell <= Date.now()) { doAction = true; }
 
-        if (doAction == false) {
-            return false;
-        }
-        
-        
+        if (doAction == false) {return false;}
         
         // Mirar si hay operaciones Pendientes. Solo se avanza si no hay.
-        const pendingResponse = current.#operations.getPendingOperations(); 
-        if(current.#operations.getPendingOperations() === false) {
-            return false;
-        }
+        if(current.#operations.getPendingOperations() != false) {return false;}
 
         console.log("Voy a revisar una acción de Venta");
 
@@ -86,26 +78,18 @@ class Bot {
                 return false; 
             }
             console.log("Sobreventa!!!");
-
             
             console.log("Voy a mirar si hay Stock para vender");
 
-                // ¿Hay Stock?
-                let qty = await current.#getQty();            
-                if(qty == false) { return false;}
+            // ¿Hay Stock?
+            let qty = await current.#getQty();            
+            if(qty == false) { return false;}
 
-                if(current.#potectedQty != 0) {
-                    qty = qty - current.#potectedQty;
-                }
-                
-                if(qty < 0) {
-                    return false;
-                }
+            if(current.#potectedQty != 0) {qty = qty - current.#potectedQty;}
 
+            if(qty < 0) {return false;}
 
-            current.#timeactionSell = Date.now() + (current.timetoresendminutes * 60 * 1000);
-
-            
+            current.#timeactionSell = Date.now() + (current.timetoresendminutes * 60 * 1000);            
 
             // ¿Hay Suficiente Stock?
             const value = await current.#coinsInfo.getTotalValueAsset(current.asset, qty);
@@ -114,7 +98,9 @@ class Bot {
             // Hacer la venta 
             console.log("Voy a hacer la venta");
             const price_close = data[data.length - 1]["close"];
+
             const recompra = current.#priceToReBuy(price_close) 
+
             current.#operations.sellOperation(
                 {
                     "priceReBuy": recompra,
@@ -123,41 +109,27 @@ class Bot {
                     "pair": current.pair,
                     "totalSell": price_close * qty
                 }
-            ); 
-
-            current.#comunication.sendEmailOperationSell();
-            
-            console.log("Venta hecha");
-            console.log({
-                "priceReBuy": recompra,
-                "priceSell": price_close,
-                "qty": qty,
-                "pair": current.pair,
-                "totalSell": price_close * qty
-            });
+            );            
         });
     }
 
+    /**
+     * This functions verify the posibility of do a Buy Operation, and if is possible
+     * runs the operation in Binance account. 
+     */
     async #buy() {
+
         const current = this;
 
         let doAction = false;
+        if (current.#timeactionBuy == null || current.#timeactionBuy <= Date.now()) { doAction = true;}
 
-        if (current.#timeactionBuy == null || current.#timeactionBuy <= Date.now()) {
-            doAction = true;
-        }
-
-        if (doAction == false) {
-            return false;
-        }
+        if (doAction == false) {return false;}
 
         console.log("Voy a revisar una acción de Compra");
 
         // Hay operaciones pendinetes?
-        const pendingResponse = current.#operations.getPendingOperations(); 
-        if(current.#operations.getPendingOperations() === false) {
-            return false;
-        }
+        if(current.#operations.getPendingOperations() === false) {return false;}
 
         // Actualizar la operación
         await current.#operations.updateMemoryOperation();
@@ -166,9 +138,7 @@ class Bot {
         const isPendingOperationFilled = current.#operations.isPendingOperationFilled(); 
         current.#timeactionBuy = Date.now() + (current.timetoresendminutesbuy * 60 * 1000);
 
-        if(isPendingOperationFilled == false) {
-            return false; 
-        }
+        if(isPendingOperationFilled == false) {return false;}
 
         console.log("Puedo comprar!!!");
 
@@ -187,33 +157,43 @@ class Bot {
                 "qty": qtyBuy,
                 "pair": pairBuy,
             }
-        );  
-        current.#comunication.sendEmailOperationBuy();
-        console.log("He comprado");
-        console.log({
-            "priceBuy": buyPrice,
-            "qty": qtyBuy,
-            "pair": pairBuy,
-        });
+        );       
     }
 
+    /**
+     * Call the sell and buy functions.
+     */
     #action() {        
         this.#sell();
         this.#buy();
     }
 
+
+    /**
+     * Get the quantity available in the Account.
+     * 
+     * @returns {number} The quantity in Account.
+     */
     async #getQty() {
         return await this.#account.getStockOf(this.asset);
-    }
+    }    
 
-    
-
+    /**
+     * Check using tradings indicators if the Market is UpperShell and have an Sell
+     * oportunity.
+     * 
+     * @returns {bool}
+     */
     #isUpperShell() {
-
         return this.#modulesFunctions.isUpperSellFunction(this.#indicator);
-
     }
 
+    /**
+     * Calculate the price of rebuy operations, starting the priceClose parameter.
+     * 
+     * @param {float} priceClose. Is the Sell Price, for calculate the Rebuy price.
+     * @returns {{rentabilidadMovimiento: number, price: number}} The Object has two properties.
+     */
     #priceToReBuy(priceClose) {
         const data = this.#modulesFunctions.priceToRebuyFunction(priceClose, this.#indicator);
         this.rentabilidadMovimiento = data.rentabilidadMovimiento;
