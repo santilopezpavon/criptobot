@@ -3,18 +3,18 @@ const Backtest = require("./src/Backtest/Backtest");
 const {
     isUpperSellFunction,
     priceToRebuyFunction
-} = require("./src/ActionsFunctions/SimpleStrategy");
+} = require("./src/ActionsFunctions/InitialStrategy");
 
 
 const coins = [
     "DOTBUSD",
-    "ETHBUSD",
+   // "ETHBUSD",
     "BTCBUSD",
     "ADABUSD",
     "GLMRBUSD",
     "BNBBUSD",
     "XRPBUSD",
-    "SOLBUSD",
+    //"SOLBUSD",
     "DOGEBUSD",
     "AVAXBUSD"
 ];

@@ -32,7 +32,7 @@ class Bot {
         this.timetoresendminutes = 30;
         this.timetoresendminutesbuy = 2;
         this.timeIntervalMinutes = 1;
-        this.#maxtradeUnits = configuration.analize.asset.maxtradeUnits;
+        this.#potectedQty = configuration.analize.asset.potectedQty;
         this.#modulesFunctions = configurationBot.modulesFunctions;
     }
 
@@ -71,6 +71,11 @@ class Bot {
         
         
         
+        // Mirar si hay operaciones Pendientes. Solo se avanza si no hay.
+        const pendingResponse = current.#operations.getPendingOperations(); 
+        if(current.#operations.getPendingOperations() === false) {
+            return false;
+        }
 
         console.log("Voy a revisar una acción de Venta");
 
@@ -82,14 +87,19 @@ class Bot {
             }
             console.log("Sobreventa!!!");
 
+            
             console.log("Voy a mirar si hay Stock para vender");
 
                 // ¿Hay Stock?
                 let qty = await current.#getQty();            
                 if(qty == false) { return false;}
 
-                if(qty > current.#maxtradeUnits) {
-                    qty = current.#maxtradeUnits;
+                if(current.#potectedQty != 0) {
+                    qty = qty - current.#potectedQty;
+                }
+                
+                if(qty < 0) {
+                    return false;
                 }
 
 
