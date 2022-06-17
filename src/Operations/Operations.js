@@ -66,6 +66,7 @@ class Operations {
             return response;
         }).catch(function (error) {
             console.log(error);
+            current.#comunication.sendErrorAlert();
             return false;
         });    
 
@@ -95,6 +96,7 @@ class Operations {
             return response;
         }).catch(function (error) {
             console.log(error);
+            current.#comunication.sendErrorAlert();
             return false;
         });     
     }

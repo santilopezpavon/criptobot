@@ -61,6 +61,16 @@ class Comunication {
             "Se ha programado una operación de venta " + configuration.analize.asset.first
         );
     }
+
+    sendErrorAlert() {
+        if(configuration.email.notification.error == false) {
+            return false;
+        }
+        this.sendEmail(
+            "Se ha producido un error " + configuration.analize.asset.first,
+            "Se ha producido un error por favor revisa los logs " + configuration.analize.asset.first
+        );
+    }
     
 }
 module.exports = getComunication;
