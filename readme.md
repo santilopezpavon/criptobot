@@ -2,6 +2,17 @@
 
 This is a Boot for trading with cripto.
 
+The Philosophy of this is the acumulation (increase the quantity). 
+
+If you Sell and repurchase (with a lower price than price Sell) frequently your Stock will increase with the same inversion. 
+
+# Phases
+
+1. The Boot detect an oversold situation in the Market
+2. Next, prepare and Sell Action and calc the price of repurchase from the price of Sell (the repurchase price it's lower than price Sell)
+3. Create a Sell Order
+4. When the Sell Order it's done, prepare and Buy order with the price of repurchase calculated in the second step.
+
 # Configuration
 
 Rename the config.example.json to config.json, this is the configuration file.
@@ -12,11 +23,18 @@ Rename the config.example.json to config.json, this is the configuration file.
         "urlbaseapi": "https://api.binance.com/api/v1/" // The URL from the boot get the market information. This parameter from the moment is fixed.
     },
     "email": {
-        "user": "user smtp", // The user SMTP
-        "pass": "password smtp", // The password SMTP
-        "to": "email destination", // Email destination of notifications
-        "from": "Name from email <email from>", // Email from appears in email        
-        "active": true // Active or disable the email service
+       "user": "user smtp",
+        "pass": "pass smtp",
+        "to": "email to send emails",
+        "from": "Name from email <email from>",   
+        "host": "in-v3.mailjet.com",
+        "port" : 587,
+        "secure": false,
+        "active": true,
+        "notification": {
+            "operations": true,
+            "error": true
+        }
     } ,
     "account": {
         "apiKey": "your api key binance",
@@ -31,9 +49,10 @@ Rename the config.example.json to config.json, this is the configuration file.
     "analize": {
         "asset": {
             "first": "DOT",
-            "second": "BUSD"
+            "second": "BUSD",
+            "potectedQty": 0
         }
-    }       
+    }      
 }
 
 ```
@@ -45,9 +64,6 @@ For launch
 node runbot.js
 ```
 
-# Versions
 
-v1.0.0
-The boot detect oportunities of oversold, when the cripto is in this state the boot will send an email, with the price of shell and the price of buyback for acumulation.
 
 

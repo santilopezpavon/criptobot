@@ -4,20 +4,21 @@
     },
     "email": {
         "user": "user smtp",
-        "pass": "password smtp",
-        "to": "email destination",
-        "from": "Name from email <email from>",        
+        "pass": "pass smtp",
+        "to": "email to send emails",
+        "from": "Name from email <email from>",   
         "host": "in-v3.mailjet.com",
         "port" : 587,
         "secure": false,
         "active": true,
         "notification": {
-            "operations": true
+            "operations": true,
+            "error": true
         }
     },
     "account": {
-        "apiKey": "your api key binance",
-        "apiSecret": "your api secret binance"
+        "apiKey": "api key Binnace",
+        "apiSecret": "api secret Binance"
     },
     "operations": {
         "truncate": {
@@ -29,7 +30,7 @@
         "asset": {
             "first": "DOT",
             "second": "BUSD",
-            "maxtradeUnits": 10
+            "potectedQty": 0
         }
-    }      
+    }
 }
