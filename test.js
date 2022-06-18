@@ -1,18 +1,24 @@
-const getCoinsInformation = require("./src/Connector/CoinsInformation");
-const getIndicator = require("./src/Indicators/Indicator");
+const StrategiesTest = require("./src/Backtest/StrategiesTest");
 
-const coinsInfo = getCoinsInformation();
-const indicator = getIndicator();
+const coins = [
+    "DOTBUSD"
+];
+
+
 /*
-coinsInfo.getHistoricalData("DOTBUSD", "3m").then(async function (data) {
-    indicator.setData(data);
-    const mfi = indicator.getEMAForProperty("volume", 16);
-    const mfi2 = indicator.getEMAForProperty("volume", 30);
-
-    console.log(indicator.getIncrementalVolume(16));
-});
-
-
+const coins = [
+    "DOTBUSD", "BTCBUSD", "ADABUSD", "GLMRBUSD",
+    "BNBBUSD", "XRPBUSD", "DOGEBUSD", "AVAXBUSD"
+];
 */
+const strategies = [
+    "labs/Aleatory",
+    //"labs/Aleatory2",
+    "labs/ModAleatory",
+    "real/07-51",
+   // "real/InitialStrategy",
+   // "BackTesting"
+];
+const strategiesTest = new StrategiesTest(coins, strategies);
 
-[]
+strategiesTest.getResults();

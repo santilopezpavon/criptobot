@@ -1,9 +1,6 @@
 const getCoinsInformation = require("../Connector/CoinsInformation");
 const getIndicator = require("./../../src/Indicators/Indicator");
-const getComunication = require("./../../src/Communication/Communication");
-const getAccount = require("./../../src/Account/Account"); 
 const configuration = require("../../config.json");
-const { bollingerbands } = require("technicalindicators");
 
 
 
@@ -12,10 +9,6 @@ class Backtest {
     #coinsInfo = getCoinsInformation();
 
     #indicator = getIndicator();
-
-    #comunication = getComunication();
-
-    #account = getAccount();
 
     #modulesFunctions = {};
 
@@ -33,6 +26,7 @@ class Backtest {
         this.#modulesFunctions = configuration.modulesFunctions;
         this.sumaVelas = 0;
         this.results = {};
+        this.verbose = false;
     }
 
 
@@ -54,12 +48,14 @@ class Backtest {
                 }
 
                 if(current.priceReBuy != null  && current.priceReBuy >= currentPriceLow) {
-                    console.log({
-                        "priceRebuy": current.priceReBuy,
-                        "rentabilidad": current.rentabilidadMovimiento,
-                        "priceSell": current.priceSell,
-                        "velas": velas
-                    });
+                    if(current.verbose === true) {
+                        console.log({
+                            "priceRebuy": current.priceReBuy,
+                            "rentabilidad": current.rentabilidadMovimiento,
+                            "priceSell": current.priceSell,
+                            "velas": velas
+                        });
+                    }                   
                     current.sumaVelas = current.sumaVelas + velas;
                     current.priceReBuy = null;
                     current.rentabilidad += current.rentabilidadMovimiento;
@@ -84,16 +80,21 @@ class Backtest {
           
 
             current.results = {
-                "Pair": current.pair,
-                "Num sobreventas": current.sobreventasNum,
-                "Operaciones": current.operaciones,
-                "Rentabilidad": current.rentabilidad,
-                "Velas pasadas media": (current.sumaVelas / current.operaciones)
+                "pair": current.pair,
+                "oversold": current.sobreventasNum,
+                "operations": current.operaciones,
+                "rentability": current.rentabilidad,
+                "candles from operation": (current.sumaVelas / current.operaciones)
             }
+            if(current.verbose === true) {
+                console.table(current.results);
+            }            
+        });    
+        return current.results;    
+    }
 
-            console.table(current.results);
-        });
-        
+    getResults() {
+        return this.results;
     }
 
     isUpperShell() {       

@@ -40,6 +40,10 @@ class Indicator {
         return input;
     }
 
+    getData() {
+        return this.#data;
+    }
+
     getRsi(period) {
         const inputRSI =  {
             "values": this.#data["close"],
@@ -50,6 +54,21 @@ class Indicator {
        return RSI.calculate(inputRSI)
 
     }
+
+    getKST() {
+        const KST = technicalIndicators.KST;
+        return KST.calculate({
+            values      : this.#data["close"],
+            ROCPer1     : 10,
+            ROCPer2     : 15,
+            ROCPer3     : 20,
+            ROCPer4     : 30,
+            SMAROCPer1  : 10,
+            SMAROCPer2  : 10,
+            SMAROCPer3  : 10,
+            SMAROCPer4  : 15,
+        })
+    } 
 
     getMfi(period) {
         //his.#data["period"] = period;
