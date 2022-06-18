@@ -2,12 +2,12 @@ const StrategiesTest = require("./src/Backtest/StrategiesTest");
 
 const coins = [
     "DOTBUSD", "BTCBUSD", "ADABUSD", "GLMRBUSD",
-    "BNBBUSD", "XRPBUSD", "DOGEBUSD", "AVAXBUSD"
+    "BNBBUSD", "XRPBUSD", "DOGEBUSD", "AVAXBUSD",
+    "SOLBUSD", "ETHBUSD"
 ];
 
 const strategies = [
-    "BackTesting", "real/InitialStrategy", "BaseStrategy", "RealBot", 
-    "InitialStrategyWithVolumeConfirmation"
+     "real/InitialStrategy", "real/07-51", "real/safe"
 ];
 
 
