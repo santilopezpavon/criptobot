@@ -1,6 +1,7 @@
 const getCoinsInformation = require("../Connector/CoinsInformation");
 const getIndicator = require("./../../src/Indicators/Indicator");
 const configuration = require("../../config.json");
+const { ChandelierExit } = require("technicalindicators");
 
 
 
@@ -44,6 +45,10 @@ class Backtest {
                 current.currentObject = currentDataPeriod[currentDataPeriod.length - 1];
 
                 if(ventaHecha == true) {
+                    /*console.log(currentDataPeriod[currentDataPeriod.length - 1]);
+                    console.log(current.priceSell);
+                    console.log(current.priceReBuy);
+                    exit();*/
                     velas++;
                 }
 
@@ -70,6 +75,9 @@ class Backtest {
                     if(current.priceReBuy == null) {
                         current.priceSell = currentPrice;
                         current.priceReBuy = current.priceToRebuy(currentPrice);
+                        console.log("******");
+                        console.log(current.priceSell);
+                        console.log(current.priceReBuy);
                         velas++;
                         ventaHecha = true;
                     }                       
@@ -78,13 +86,17 @@ class Backtest {
                 
             }
           
-
+            let candlesFromOperation = 0;
+            if(current.operaciones > 0) {
+                candlesFromOperation = current.sumaVelas / current.operaciones;
+            }
             current.results = {
                 "pair": current.pair,
                 "oversold": current.sobreventasNum,
                 "operations": current.operaciones,
                 "rentability": current.rentabilidad,
-                "candles from operation": (current.sumaVelas / current.operaciones)
+                "candles from operation": candlesFromOperation,
+                "velas pendientes": velas
             }
             if(current.verbose === true) {
                 console.table(current.results);

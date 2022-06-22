@@ -52,16 +52,23 @@ class CoinsInformation {
      */
     #convertData(dataArray) {
         let dataArrayConvert = [];
+        let pos = 0;
         dataArray.map(function (element) {
+            var date = new Date(element[6]);
+            var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+
             let provisionalObject = {
                 high: parseFloat(element[2]),
                 low: parseFloat(element[3]),
                 close: parseFloat(element[4]),
                 volume: parseFloat(element[5]),
                 numtrades: parseFloat(element[8]),
-                open: parseFloat(element[1])
-            };
+                open: parseFloat(element[1]),
+                dataClose: formattedDate,
+                pos: pos
 
+            };
+            pos++;
             provisionalObject["bullish"] = provisionalObject.open < provisionalObject.close;
 
             if(provisionalObject["bullish"] === true) {

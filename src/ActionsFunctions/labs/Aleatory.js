@@ -5,7 +5,7 @@ function isUpperSellFunction(indicator) {
 function priceToRebuyFunction(priceClose, indicator) {
     
 
-    let rentabilidadMovimiento = 0.007;
+    let rentabilidadMovimiento = 0.006;
  
     return {
         "price": priceClose - (priceClose * rentabilidadMovimiento),
