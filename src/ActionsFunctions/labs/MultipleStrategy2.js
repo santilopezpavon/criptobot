@@ -1,7 +1,7 @@
 function isUpperSellFunction(indicator) {   
     const lastCandle = indicator.getLastCandle();
-    const rsi_short = indicator.getRsi(16);
-    const mfi_short = indicator.getMfi(40);
+    const rsi_short = indicator.getRsi(6);
+    const mfi_short = indicator.getMfi(16);
     const rsi_long = indicator.getRsi(40);
     const volumeOscilator = indicator.getVolumeOscilator();
     const volumeOscilatorValue = volumeOscilator[volumeOscilator.length - 1];

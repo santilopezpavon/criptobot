@@ -14,9 +14,9 @@ class Backtest {
     #modulesFunctions = {};
 
 
-    constructor(configuration) {
-        this.pair = configuration.pair;
-        this.initfrom = configuration.initfrom
+    constructor(configurationParam) {
+        this.pair = configurationParam.pair;
+        this.initfrom = configuration.test.initPeriod
         this.priceReBuy = null;
         this.operaciones = 0;
         this.rentabilidad = 0;
@@ -24,7 +24,7 @@ class Backtest {
         this.currentObject = {};
         this.sobreventasNum = 0;
         this.priceSell = 0;
-        this.#modulesFunctions = configuration.modulesFunctions;
+        this.#modulesFunctions = configurationParam.modulesFunctions;
         this.sumaVelas = 0;
         this.results = {};
         this.verbose = false;
@@ -76,8 +76,7 @@ class Backtest {
                         current.priceSell = currentPrice;
                         current.priceReBuy = current.priceToRebuy(currentPrice);
                         console.log("******");
-                        console.log(current.priceSell);
-                        console.log(current.priceReBuy);
+                        console.log(current);
                         velas++;
                         ventaHecha = true;
                     }                       

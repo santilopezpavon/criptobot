@@ -10,7 +10,7 @@ function isUpperSellFunction(indicator) {
         rsi_long[rsi_long.length - 1] > 60 &&
         mfi_short[mfi_short.length - 1] > 50 &&
         lastCandle.bullish === true &&
-        volumeOscilatorValue > 0
+        volumeOscilatorValue > 10
     ) {
         return true;
      }

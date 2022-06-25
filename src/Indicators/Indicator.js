@@ -88,9 +88,12 @@ class Indicator {
 
     }
 
-    getRsi(period) {
+    getRsi(period, arrayData = null) {
+        if(arrayData == null) {
+            arrayData = this.#data["close"];
+        }
         const inputRSI =  {
-            "values": this.#data["close"],
+            "values": arrayData,
             "period": period
         };
 
@@ -135,6 +138,7 @@ class Indicator {
 
     }
 
+  
     getIncrementalVolume(period){
         const volumenEma = this.getEMAForProperty("volume", period);
         let count = 0;
@@ -169,16 +173,19 @@ class Indicator {
 
     isInvertedHammer() {        
         const lastCandle = this.#dataIni[this.#dataIni.length - 1];
-        const pastCandle = this.#dataIni[this.#dataIni.length - 5];
+        
         const prevCandle = this.#dataIni[this.#dataIni.length - 2];
+        const pastCandle = this.#dataIni[this.#dataIni.length - 5];
+        const pastCandle10 = this.#dataIni[this.#dataIni.length - 10];
 
         if(
             lastCandle["higherShadow"] / lastCandle["total"] > 0.6 &&
             // lastCandle["lowerShadow"] / lastCandle["total"] < 0.15 && 
-            lastCandle["lowerShadow"] <= lastCandle["total"] &&
-            lastCandle["close"] > pastCandle["close"] && 
-            prevCandle["body"] > lastCandle["total"] * 0.5 &&
-            prevCandle["body"] / prevCandle["total"] > 0.8
+            //lastCandle["lowerShadow"] <= lastCandle["total"] &&
+            //lastCandle["close"] > pastCandle["close"] && 
+            lastCandle["close"] > pastCandle10["close"]// && 
+            //prevCandle["body"] > lastCandle["total"] * 0.5 &&
+           // prevCandle["body"] / prevCandle["total"] > 0.8
             )
         {
             return true;
@@ -242,6 +249,35 @@ class Indicator {
         const lastCadnle = this.getLastCandle();
         return candlePattern.lastPos === lastCadnle.pos;
     }
+
+    getMacd(prop = "close") {
+        const inputRSI =  {
+            "values": this.#data[prop],
+            fastPeriod        : 12,
+            slowPeriod        : 23,
+            signalPeriod      : 9 ,
+            SimpleMAOscillator: false,
+            SimpleMASignal    : false
+        };
+
+        const MACD = technicalIndicators.MACD;
+       return MACD.calculate(inputRSI)
+    
+    }
+
+    macdRsi(prop = "close", rsiPeriod = 16) {
+        const macd = this.getMacd(prop);
+        const arrayData = [];
+        for (let index = 0; index < macd.length; index++) {
+            if(typeof macd[index].MACD !== 'undefined') {
+                arrayData.push(macd[index].MACD);
+            }
+            
+        }
+        return this.getRsi(rsiPeriod, arrayData) 
+    }
+
+    
 
     isUpperShell() {      
 

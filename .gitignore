@@ -1,3 +1,4 @@
 config.json
 node_modules
 src/Memory/data.json
+src/Memory/cache.json

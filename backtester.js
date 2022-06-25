@@ -7,7 +7,15 @@ const coins = [
 ];
 
 const strategies = [
-     "real/InitialStrategy", "real/07-51", "real/safe"
+     /*"real/InitialStrategy", 
+     "real/07-51", 
+     "real/safe", 
+     "best/divergencemcdvol",
+     "best/rsimfivol",  
+     "best/mcdrsi",  */
+     // "best/mcdvol",
+     "labs/divergencemacd"
+    
 ];
 
 
