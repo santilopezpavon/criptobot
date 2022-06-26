@@ -5,14 +5,17 @@ init();
 async function init() {
     const results = await statsService.getCoins(
         [
-            "best/divergencemcdvol",
+            /*"best/divergencemcdvol",
             "best/mcdrsi",
             "best/mcdvol",
             "best/rsimfivol",
-            "best/rsiwithvol",
+            "best/rsiwithvol",*/
             "combination/combination01",
-            "real/07-51",
-
+            "combination/combination02",
+           /* "real/07-51",*/
+            /*"labs/divergencemacd",
+            "labs/CandlePattern",
+*/
             //"best/divergencemcdvol",
             //"labs/divergencemacd",
             /*"RealBot", "SimpleStrategy", "real/safe", 

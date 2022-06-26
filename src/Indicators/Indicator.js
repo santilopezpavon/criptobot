@@ -1,7 +1,8 @@
 const technicalIndicators = require("technicalindicators");
 const tulind = require('tulind');
 const cs = require('candlestick');
-
+const {getIndicatorMedian} = require('../Strategies/MedianStrategy');
+const {getIndicatorVolumeProfileStrategy} = require('../Strategies/VolumeProfileStrategy');
 
 
 function getIndicator() {
@@ -16,6 +17,10 @@ class Indicator {
 
     #dataIni;
 
+    medianStrategy;
+
+    volumeProfileStrategy;
+
     static getInstance() {
         if (!Indicator.#instance) {
             Indicator.#instance = new Indicator()
@@ -26,6 +31,8 @@ class Indicator {
     setData(data) {
         this.#dataIni = data;
         this.#data = this.#prepareData(data);
+        this.medianStrategy = getIndicatorMedian(this.#dataIni, this.#data);
+        this.volumeProfileStrategy = getIndicatorVolumeProfileStrategy(this.#dataIni, this.#data);
     }
 
     #prepareData(data) {

@@ -3,12 +3,7 @@ function isUpperSellFunction(indicator) {
  }
  
  function priceToRebuyFunction(priceClose, indicator) {      
-     let rentabilidadMovimiento = 0.007;   
-     /*const volumeOscilator = indicator.getVolumeOscilator();
-     const volumeOscilatorValue = volumeOscilator[volumeOscilator.length - 1];
-     if(volumeOscilatorValue < 40) {
-         rentabilidadMovimiento = 0.007;  
-     } */   
+     let rentabilidadMovimiento = 0.007;     
   
      return {
          "price": priceClose - (priceClose * rentabilidadMovimiento),
