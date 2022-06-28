@@ -22,7 +22,7 @@ async function init() {
 
     for (let index = 0; index < coins.length; index++) {
         const coin = coins[index];
-        await coinsInformation.getHistoricalData(coin, "3m").then(async function (data) {
+        await coinsInformation.getHistoricalData(coin, configuration.analize.asset.temporality).then(async function (data) {
             for (let index = 50; index < data.length - 10; index++) {
                 const currentDataPeriod = data.slice(0, index + 1);
                 indicator.setData(currentDataPeriod);

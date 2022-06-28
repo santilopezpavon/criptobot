@@ -35,7 +35,7 @@ class Backtest {
         const current = this;
         let velas = 0;
         let ventaHecha = false;
-        await this.#coinsInfo.getHistoricalData(current.pair, "3m").then(async function (data) {
+        await this.#coinsInfo.getHistoricalData(current.pair, configuration.analize.asset.temporality).then(async function (data) {
             for (let index = current.initfrom; index < data.length; index++) {
                 const currentDataPeriod = data.slice(0, index + 1);
                 current.#indicator.setData(currentDataPeriod);

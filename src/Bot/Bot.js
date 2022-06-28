@@ -71,7 +71,7 @@ class Bot {
 
         console.log("Voy a revisar una acción de Venta");
 
-        this.#coinsInfo.getHistoricalData(this.pair, "3m").then(async function (data) {
+        this.#coinsInfo.getHistoricalData(this.pair, configuration.analize.asset.temporality).then(async function (data) {
             current.#indicator.setData(data);
             
             if (current.#isUpperShell() == false) {                

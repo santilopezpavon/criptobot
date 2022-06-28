@@ -52,7 +52,7 @@ class StrategiesStatisticalTest {
         const current = this;
         for (let i = 0; i < this.#coins.length; i++) {
             const coin = this.#coins[i];
-            const coinData = await this.getCoin(coin, "3m");
+            const coinData = await this.getCoin(coin, configuration.analize.asset.temporality);
 
             for (let j = configuration.test.initPeriod; j < coinData.length - 50; j++) {
                 const currentDataPeriod = coinData.slice(0, j + 1);
