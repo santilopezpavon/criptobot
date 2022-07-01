@@ -1,5 +1,6 @@
 function isUpperSellFunction(indicator) {  
-    return indicator.volumeProfileStrategy.checkDoubleVerification(); 
+    return indicator.volumeProfileStrategy.checkDoubleVerification(45); 
+   // return indicator.medianStrategy.checkDoubleVerification(45); 
 }
 
 function priceToRebuyFunction(priceClose, indicator) {

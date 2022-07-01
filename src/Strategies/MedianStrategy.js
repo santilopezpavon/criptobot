@@ -41,6 +41,41 @@ class MedianStrategy {
     }
 
 
+    checkDoubleVerification(period = 40) {
+
+        const lastCandle = this.#dataIni[this.#dataIni.length - 1];
+
+        const mediaClose = this.#getSMAForProperty("close", period);
+        if( lastCandle.close < mediaClose[mediaClose.length - 1]) {
+            return false;
+        }
+
+
+        const rsiPeriods = [40];
+
+        for (let index = 0; index < rsiPeriods.length; index++) {
+            const element = rsiPeriods[index];
+
+            const inputRSI =  {
+                "values": this.#data["close"],
+                "period": element
+            };
+    
+            const RSI = technicalIndicators.RSI;
+            const rsiValue = RSI.calculate(inputRSI)
+            const rsiLastValue = rsiValue[rsiValue.length - 1];
+            if(rsiLastValue  < 50) {
+                return false;
+            }
+        }       
+
+        return true;       
+
+    }
+
+
+
+
 
    
 

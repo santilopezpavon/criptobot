@@ -61,7 +61,8 @@ class VolumeProfileStrategy {
         return false;
     }
 
-    checkDoubleVerification(period = 40, numBarsUpper = 6) {
+    checkDoubleVerification(period = 40) {
+       
         const volumeProfileMax = this.getRangerPriceMain(40, period);
         const basePrice = volumeProfileMax.rangeEnd;
 
@@ -71,56 +72,27 @@ class VolumeProfileStrategy {
         if(basePrice < lastCandleClose) {
             return false;
         }
+       
 
-        const values = this.#data["close"];  
-        const sma = technicalIndicators.SMA.calculate({period : 48, values : values}); 
-        const smaValue = sma[lastPosition];
-        if(smaValue  > lastCandleClose) {
-            return false;
-        }
+        const rsiPeriods = [40];
 
-        for (let index = lastPosition; index > (lastPosition - numBarsUpper); index--) {
-            const currentBar = this.#dataIni[index];
-            if(currentBar.low < sma[index]) {
+        for (let index = 0; index < rsiPeriods.length; index++) {
+            const element = rsiPeriods[index];
+
+            const inputRSI =  {
+                "values": this.#data["close"],
+                "period": element
+            };
+    
+            const RSI = technicalIndicators.RSI;
+            const rsiValue = RSI.calculate(inputRSI)
+            const rsiLastValue = rsiValue[rsiValue.length - 1];
+            if(rsiLastValue  < 50) {
                 return false;
             }
-            
-        }
+        }       
 
-        const volumeProfileMaxAmplified = this.getRangerPriceMain(40, 5);
-        const maxPriceAmplified = volumeProfileMaxAmplified.rangeEnd;
-
-        if(maxPriceAmplified < lastCandleClose) {
-            return false;
-        }
-
-
-        /*const volumeProfileMaxAmplified2 = this.getRangerPriceMain(40, 10);
-        const maxPriceAmplified2 = volumeProfileMaxAmplified2.rangeEnd;
-
-        if(maxPriceAmplified2 < lastCandleClose) {
-            return false;
-        }*/
-
-
-
-        /*const from = lastPosition - numBarsUpper;
-        /*console.log("-----");
-        console.log(from);
-        console.log(lastPosition);
-        for (let index = lastPosition; index > from; index--) {
-            
-            if(maxPrice > this.#dataIni[index].close) {
-                console.log("entra");
-            console.log(maxPrice);
-            console.log(this.#dataIni[index].close);
-                return false;
-            }            
-        }*/
-        
-
-        return true;
-        
+        return true;       
 
     }
 
