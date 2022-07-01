@@ -75,7 +75,7 @@ class VolumeProfileStrategy {
         const values = this.#data["close"];  
         const sma = technicalIndicators.SMA.calculate({period : 48, values : values}); 
         const smaValue = sma[lastPosition];
-        if(smaValue * 1.10 > lastCandleClose) {
+        if(smaValue  > lastCandleClose) {
             return false;
         }
 
@@ -93,6 +93,15 @@ class VolumeProfileStrategy {
         if(maxPriceAmplified < lastCandleClose) {
             return false;
         }
+
+
+        /*const volumeProfileMaxAmplified2 = this.getRangerPriceMain(40, 10);
+        const maxPriceAmplified2 = volumeProfileMaxAmplified2.rangeEnd;
+
+        if(maxPriceAmplified2 < lastCandleClose) {
+            return false;
+        }*/
+
 
 
         /*const from = lastPosition - numBarsUpper;
