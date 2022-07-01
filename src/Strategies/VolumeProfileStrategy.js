@@ -61,12 +61,14 @@ class VolumeProfileStrategy {
         return false;
     }
 
-    checkDoubleVerification(period = 40, numBarsUpper = 5) {
+    checkDoubleVerification(period = 40, numBarsUpper = 6) {
         const volumeProfileMax = this.getRangerPriceMain(40, period);
-        const maxPrice = volumeProfileMax.rangeEnd;
+        const basePrice = volumeProfileMax.rangeEnd;
+
         const lastPosition = this.#dataIni.length - 1;
         const lastCandleClose = this.#dataIni[lastPosition].close;
-        if(maxPrice < lastCandleClose) {
+        
+        if(basePrice < lastCandleClose) {
             return false;
         }
 
@@ -85,7 +87,7 @@ class VolumeProfileStrategy {
             
         }
 
-        const volumeProfileMaxAmplified = this.getRangerPriceMain(40, 6);
+        const volumeProfileMaxAmplified = this.getRangerPriceMain(40, 5);
         const maxPriceAmplified = volumeProfileMaxAmplified.rangeEnd;
 
         if(maxPriceAmplified < lastCandleClose) {

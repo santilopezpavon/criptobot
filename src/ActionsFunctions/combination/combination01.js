@@ -1,6 +1,6 @@
 function isUpperSellFunction(indicator) {   
     const strategies = [
-        "best/mcdvol", "best/rsiwithvol", "best/divergencemcdvol"
+        "best/smaUpperShort", "best/volumeProfileUpperShort"
     ];
 
     for (let index = 0; index < strategies.length; index++) {
