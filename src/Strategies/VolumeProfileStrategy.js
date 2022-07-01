@@ -19,21 +19,24 @@ class VolumeProfileStrategy {
         this.#data = data;
     }
 
-    getVolumeProfile(nbars) {
+    getVolumeProfile(nbars, period) {
+        const numItems = this.#data["high"].length;
+        const to = numItems;
+        const from = numItems - period;
         let input = {
-            high      :this.#data["high"],
-            open       :this.#data["open"],
-            low       : this.#data["low"],
-            close     : this.#data["close"],
-            volume    : this.#data["volume"],
+            high      :this.#data["high"].slice(from, to),
+            open       :this.#data["open"].slice(from, to),
+            low       : this.#data["low"].slice(from, to),
+            close     : this.#data["close"].slice(from, to),
+            volume    : this.#data["volume"].slice(from, to),
             noOfBars  : nbars
         }
 
         return technicalIndicators.VolumeProfile.calculate(input); 
     }
 
-    getRangerPriceMain(nbars) {
-        const profile = this.getVolumeProfile(nbars);
+    getRangerPriceMain(nbars, period = 40) {
+        const profile = this.getVolumeProfile(nbars, period);
         let pos = 0;
         let max = null;
         for (let i = 0; i < profile.length; i++) {
@@ -46,8 +49,8 @@ class VolumeProfileStrategy {
         return profile[pos];
     }
 
-    isPriceCloseSuperiorThanRange(distance) {
-        const volumeProfileMax = this.getRangerPriceMain(40);
+    isPriceCloseSuperiorThanRange(distance, period) {
+        const volumeProfileMax = this.getRangerPriceMain(40, period);
         const maxPrice = volumeProfileMax.rangeEnd;
         const lastCandleClose = this.#dataIni[this.#dataIni.length - 1].close;
         if(lastCandleClose > maxPrice && 
@@ -58,26 +61,57 @@ class VolumeProfileStrategy {
         return false;
     }
 
-    /*#getSMAForProperty(property, period) {
-        const values = this.#data[property];  
-        return technicalIndicators.SMA.calculate({period : period, values : values}); 
-    }
-
-    checkPriceUpperSMA(period, distance) {
-        const lastCandle = this.#dataIni[this.#dataIni.length - 1];
-        const mediaClose = this.#getSMAForProperty("close", period);
-        const lastPos = mediaClose.length - 1;
-
-        if(
-            lastCandle.close > mediaClose[lastPos] && 
-            ((lastCandle.close - mediaClose[lastPos]) / mediaClose[lastPos]) > distance
-        
-            ) {
-                return true;
+    checkDoubleVerification(period = 40, numBarsUpper = 5) {
+        const volumeProfileMax = this.getRangerPriceMain(40, period);
+        const maxPrice = volumeProfileMax.rangeEnd;
+        const lastPosition = this.#dataIni.length - 1;
+        const lastCandleClose = this.#dataIni[lastPosition].close;
+        if(maxPrice < lastCandleClose) {
+            return false;
         }
-        return false;
 
-    }*/
+        const values = this.#data["close"];  
+        const sma = technicalIndicators.SMA.calculate({period : 48, values : values}); 
+        const smaValue = sma[lastPosition];
+        if(smaValue * 1.10 > lastCandleClose) {
+            return false;
+        }
+
+        for (let index = lastPosition; index > (lastPosition - numBarsUpper); index--) {
+            const currentBar = this.#dataIni[index];
+            if(currentBar.low < sma[index]) {
+                return false;
+            }
+            
+        }
+
+        const volumeProfileMaxAmplified = this.getRangerPriceMain(40, 6);
+        const maxPriceAmplified = volumeProfileMaxAmplified.rangeEnd;
+
+        if(maxPriceAmplified < lastCandleClose) {
+            return false;
+        }
+
+
+        /*const from = lastPosition - numBarsUpper;
+        /*console.log("-----");
+        console.log(from);
+        console.log(lastPosition);
+        for (let index = lastPosition; index > from; index--) {
+            
+            if(maxPrice > this.#dataIni[index].close) {
+                console.log("entra");
+            console.log(maxPrice);
+            console.log(this.#dataIni[index].close);
+                return false;
+            }            
+        }*/
+        
+
+        return true;
+        
+
+    }
 
 
 

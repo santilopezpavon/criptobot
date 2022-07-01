@@ -10,6 +10,11 @@ async function init() {
             "best/mcdvol",
             "best/rsimfivol",
             "best/rsiwithvol",*/
+            "best/volumeProfileUpperv2",
+            "best/volumeProfileUpper",
+            "best/smaUpper",
+            "best/smaUpperShort",
+            "best/volumeProfileUpperShort",
             "combination/combination01",
             "combination/combination02",
            /* "real/07-51",*/
