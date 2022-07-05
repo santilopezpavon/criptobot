@@ -3,6 +3,7 @@ const tulind = require('tulind');
 const cs = require('candlestick');
 const {getIndicatorMedian} = require('../Strategies/MedianStrategy');
 const {getIndicatorVolumeProfileStrategy} = require('../Strategies/VolumeProfileStrategy');
+const {getIndicatorRSIStrategy} = require('../Strategies/RSIStrategy');
 
 
 function getIndicator() {
@@ -21,6 +22,8 @@ class Indicator {
 
     volumeProfileStrategy;
 
+    rsiStrategy;
+
     static getInstance() {
         if (!Indicator.#instance) {
             Indicator.#instance = new Indicator()
@@ -33,6 +36,7 @@ class Indicator {
         this.#data = this.#prepareData(data);
         this.medianStrategy = getIndicatorMedian(this.#dataIni, this.#data);
         this.volumeProfileStrategy = getIndicatorVolumeProfileStrategy(this.#dataIni, this.#data);
+        this.rsiStrategy = getIndicatorRSIStrategy(this.#dataIni, this.#data);
     }
 
     #prepareData(data) {

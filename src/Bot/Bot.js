@@ -195,9 +195,9 @@ class Bot {
      * @returns {{rentabilidadMovimiento: number, price: number}} The Object has two properties.
      */
     #priceToReBuy(priceClose) {
-        const data = this.#modulesFunctions.priceToRebuyFunction(priceClose, this.#indicator);
-        this.rentabilidadMovimiento = data.rentabilidadMovimiento;
-        return data.price;
+        let rentabilidadMovimiento = configuration.analize.asset.profit;      
+        this.rentabilidadMovimiento = rentabilidadMovimiento;
+        return priceClose - (priceClose * rentabilidadMovimiento);       
     }
 
 

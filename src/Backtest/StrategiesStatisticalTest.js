@@ -2,6 +2,8 @@ const getCacheService = require("./../../src/Memory/Cache");
 const getCoinsInformation = require("../Connector/CoinsInformation");
 const getIndicator = require("./../../src/Indicators/Indicator");
 const configuration = require("../../config.json");
+const FS   = require("fs");
+const Path = require("path");
 
 
 function getStrategiesStatisticalTestService() {
@@ -35,6 +37,35 @@ class StrategiesStatisticalTest {
     #coinsInformation = getCoinsInformation();
 
     #indicator = getIndicator();
+
+
+    getStrategiesByDirectory(Directory) {
+        const prefix = 'src/ActionsFunctions/';
+        let Files = [];
+        FS.readdirSync(prefix + Directory).forEach(File => {
+            const Absolute = Path.join(prefix + Directory, File);
+            return Files.push(Absolute);
+        });
+
+        for (let index = 0; index < Files.length; index++) {
+            Files[index] = Files[index].replace(prefix, '');
+            
+        }       
+        return Files;
+    }
+
+    getStrategiesByDirectories(Directory = []) {
+        let files = [];
+        for (let index = 0; index < Directory.length; index++) {
+            const element = Directory[index];
+            const allFiles = this.getStrategiesByDirectory(element);
+            for (let j = 0; j < allFiles.length; j++) {
+                files.push(allFiles[j]);
+                
+            }
+        }
+        return files;
+    }
 
     async getCoins(strategies = []) {
         let results = {};
@@ -78,7 +109,7 @@ class StrategiesStatisticalTest {
                         const futureCandle4 = coinData[position + 15];
 
 
-                        const reduction = lastCandle.close - (lastCandle.close * 0.007);
+                        const reduction = lastCandle.close - (lastCandle.close * configuration.analize.asset.profit);
                         
                         let bajada = false;
                         for (let k = 1; k <= 50; k++) {

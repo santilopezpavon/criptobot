@@ -50,8 +50,7 @@ class StrategiesTest {
     async getResultsStrategy(pair, strategy) {
 
         const {
-            isUpperSellFunction,
-            priceToRebuyFunction
+            isUpperSellFunction
         } = require("./../ActionsFunctions/" + strategy);
         
 
@@ -60,7 +59,6 @@ class StrategiesTest {
             "initfrom": 51,
             "modulesFunctions": {
                 "isUpperSellFunction": isUpperSellFunction,
-                "priceToRebuyFunction": priceToRebuyFunction
             }
         });
         await backtest.init();

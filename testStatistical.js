@@ -1,56 +1,73 @@
 const getStrategiesStatisticalTestService = require("./src/Backtest/StrategiesStatisticalTest");
-
 const statsService = getStrategiesStatisticalTestService();
-init();
-async function init() {
+
+let all = statsService.getStrategiesByDirectories(["best", "test", "closed", "legacy"]);
+
+
+//let all = statsService.getStrategiesByDirectories(["test"]);
+init(all);
+async function init(strategiesArray) {
     const results = await statsService.getCoins(
-        [
-            "best/divergencemcdvol",
-            /*"best/mcdrsi",
-            "best/mcdvol",
-            "best/rsimfivol",
-            "best/rsiwithvol",*/
-            "best/volumeAndRSI",
-            "best/volumeProfileUpper",
-            "best/smaUpper",
-            "best/smaUpperShort",
-            "best/volumeProfileUpperShort",
-            "combination/combination01",
-            "combination/combination02",
-            "real/07-51",
-            /*"labs/divergencemacd",
-            "labs/CandlePattern",
-*/
-            //"best/divergencemcdvol",
-            //"labs/divergencemacd",
-            /*"RealBot", "SimpleStrategy", "real/safe", 
-            "labs/MultipleStrategy", "labs/Aleatory",
-            "real/07-51", "labs/CandlePattern", "labs/Hammer",
-            "labs/ModAleatory2",
-            "labs/MultipleStrategy", "labs/MultipleStrategy2",
-            "labs/MultipleStrategy3", "labs/MultipleStrategy4",
-            "labs/MultipleStrategy5"*/
-        ]
+        strategiesArray
     );
 
-    console.log("Resultados en General");
-    console.table(results);
-
-    /*console.log("Ordenado más operaciones");
-    console.log(results.sort(compareTotal));
-
-    console.log("Ordenado más acierto");
-    console.log(results.sort(compareBajadas));
+    console.log("Ordenados por % bajadas");
+    let resultsArrayBajadas = convertObjectToArray(results).sort(function (a, b) {
+        return b["%bajadas"] - a["%bajadas"];
+    });
+    console.table(resultsArrayBajadas);
 
 
-    function compareBajadas(a, b) {
+    console.log("Ordenados por total");
+    resultsArrayTotal = convertObjectToArray(results).sort(function (a, b) {
+        return b["total"] - a["total"];
+    });
+    console.table(resultsArrayTotal);
 
-        return a["%bajadas"] - b["%bajadas"];
+
+    console.log("Mejores estrategias");
+    resultsArrayBest = convertObjectToArray(results).filter(function (item) {
+        return item["total"] > 1500 && item["%bajadas"] > 75;
+    });
+    console.table(resultsArrayBest);
+
+
+    let positions = convertObjectToArray(results);
+    for (let index = 0; index < positions.length; index++) {
+        const element = positions[index];
+        const strategy = element["_strategy"];
+        element["pos efect"] = getPositionStrategy(strategy, resultsArrayBajadas);
+        element["pos total"] = getPositionStrategy(strategy, resultsArrayTotal);
+        element["sum"] = element["pos efect"] + element["pos total"];        
     }
 
-    function compareTotal(a, b) {
+    positionsOrdered = positions.sort(function (a, b) {
+        return a["sum"] - b["sum"];
+    });
+    console.table(positionsOrdered);
 
-        return a.total - b.total;
-    }*/
+
+
+
+
+
+
+
+
 }
-
+function getPositionStrategy(strategyName, arrayWithStrategies) {
+    for (let index = 0; index < arrayWithStrategies.length; index++) {
+        const element = arrayWithStrategies[index];
+        if(element["_strategy"] === strategyName) {
+            return index + 1;
+        }        
+    }
+}
+function convertObjectToArray(object) {
+    var arrayForPrint = [];
+    for (const key in object) {
+        object[key]["_strategy"] = key;
+        arrayForPrint.push(object[key]);    
+    }
+    return arrayForPrint;
+}

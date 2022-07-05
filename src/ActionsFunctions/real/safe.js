@@ -12,31 +12,5 @@ function isUpperSellFunction(indicator) {
     return false;
 }
 
-function priceToRebuyFunction(priceClose, indicator) {
-    //let rentabilidadMovimiento = 0.007;
 
-    const rsi_short = indicator.getRsi(16);
-    const mfi_short = indicator.getMfi(16);
-
-    const boolinguer = indicator.getBollingerBands(10);
-    const middle = boolinguer[boolinguer.length - 1].middle;
-    const middleCalculate = middle;
-
-
-    let rentabilidadMovimiento = ((middleCalculate - priceClose)/ priceClose ) * -1;
-
-    if(rentabilidadMovimiento < 0.003) {
-        rentabilidadMovimiento = 0.003;
-    }
-
-
-
- 
-    return {
-        "price": priceClose - (priceClose * rentabilidadMovimiento),
-        "rentabilidadMovimiento": rentabilidadMovimiento
-    }
-
-}
-
-module.exports = { isUpperSellFunction, priceToRebuyFunction }
+module.exports = { isUpperSellFunction }

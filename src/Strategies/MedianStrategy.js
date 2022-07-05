@@ -38,46 +38,21 @@ class MedianStrategy {
         }
         return false;
 
-    }
+    }   
 
 
-    checkDoubleVerification(period = 40) {
-
-        const lastCandle = this.#dataIni[this.#dataIni.length - 1];
-
+    checkPriceMantainsDownSMA(period = 48, numCandles = 10, delay = 0) {
         const mediaClose = this.#getSMAForProperty("close", period);
-        if( lastCandle.close < mediaClose[mediaClose.length - 1]) {
-            return false;
-        }
 
-
-        const rsiPeriods = [40];
-
-        for (let index = 0; index < rsiPeriods.length; index++) {
-            const element = rsiPeriods[index];
-
-            const inputRSI =  {
-                "values": this.#data["close"],
-                "period": element
-            };
-    
-            const RSI = technicalIndicators.RSI;
-            const rsiValue = RSI.calculate(inputRSI)
-            const rsiLastValue = rsiValue[rsiValue.length - 1];
-            if(rsiLastValue  < 50) {
+        for (let j = 1 + delay; j <= numCandles + delay; j++) {
+            if(
+                mediaClose[mediaClose.length - j] < this.#dataIni[this.#dataIni.length - j].high                
+            ) {
                 return false;
-            }
-        }       
-
-        return true;       
-
+            }            
+        }
+        return true;
     }
-
-
-
-
-
-   
 
 }
 
