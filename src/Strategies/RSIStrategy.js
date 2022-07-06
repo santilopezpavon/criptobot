@@ -26,6 +26,16 @@ class RSIStrategy {
         return RSI.calculate(inputRSI)
     }
 
+    getRsi(period, prop) {
+        return this.#getRsi(period, prop);
+    }
+
+    getRsiValue(period, prop, delay = 0) {
+        const rsi =  this.#getRsi(period, prop);
+        return rsi[rsi.length - 1 - delay];
+    }
+    
+
     checkPriceUpperRsi(period, value) {
         const rsi = this.#getRsi(period, "close");
         const rsiValue = rsi[rsi.length - 1];
@@ -87,6 +97,7 @@ class RSIStrategy {
        
     }
 
+    
     
 
 

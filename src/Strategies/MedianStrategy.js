@@ -24,6 +24,10 @@ class MedianStrategy {
         return technicalIndicators.SMA.calculate({period : period, values : values}); 
     }
 
+    getSMAForProperty(property, period) {
+        return this.#getSMAForProperty(property, period) ;
+    }
+
     checkPriceUpperSMA(period, distance) {
         const lastCandle = this.#dataIni[this.#dataIni.length - 1];
         const mediaClose = this.#getSMAForProperty("close", period);

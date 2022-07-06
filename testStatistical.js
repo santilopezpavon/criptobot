@@ -1,10 +1,10 @@
 const getStrategiesStatisticalTestService = require("./src/Backtest/StrategiesStatisticalTest");
 const statsService = getStrategiesStatisticalTestService();
 
-let all = statsService.getStrategiesByDirectories(["best", "test", "closed", "legacy"]);
+ let all = statsService.getStrategiesByDirectories([ "test", "closed", "combination"]);
 
 
-//let all = statsService.getStrategiesByDirectories(["test"]);
+// let all = statsService.getStrategiesByDirectories(["test"]);
 init(all);
 async function init(strategiesArray) {
     const results = await statsService.getCoins(

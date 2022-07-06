@@ -35,13 +35,13 @@ class VolumeProfileStrategy {
         return technicalIndicators.VolumeProfile.calculate(input); 
     }
 
-    getRangerPriceMain(nbars, period = 40) {
+    getRangerPriceMain(nbars, period = 40, typeVolume = 'totalVolume') {
         const profile = this.getVolumeProfile(nbars, period);
         let pos = 0;
         let max = null;
         for (let i = 0; i < profile.length; i++) {
-            if(max == null || max < profile[i].totalVolume) {
-                max = profile[i].totalVolume;
+            if(max == null || max < profile[i][typeVolume]) {
+                max = profile[i][typeVolume];
                 pos = i;
             }            
         }
@@ -49,10 +49,12 @@ class VolumeProfileStrategy {
         return profile[pos];
     }
 
-    isPriceCloseSuperiorThanRange(distance, period) {
-        const volumeProfileMax = this.getRangerPriceMain(40, period);
+
+    isPriceCloseSuperiorThanRange(distance, period, nbars = 40, typeVolume = 'totalVolume') {
+        const volumeProfileMax = this.getRangerPriceMain(nbars, period, typeVolume);
         const maxPrice = volumeProfileMax.rangeEnd;
         const lastCandleClose = this.#dataIni[this.#dataIni.length - 1].close;
+        //console.log(volumeProfileMax);
         if(lastCandleClose > maxPrice && 
             ((lastCandleClose - maxPrice) / maxPrice) > distance
             ) {

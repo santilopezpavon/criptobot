@@ -1,6 +1,6 @@
 function isUpperSellFunction(indicator) {   
     const strategies = [
-        "best/smaUpperShort", "best/volumeProfileUpperShort"
+        "closed/smaUpper", "closed/median", "closed/smaUpperShort"
     ];
 
     for (let index = 0; index < strategies.length; index++) {
