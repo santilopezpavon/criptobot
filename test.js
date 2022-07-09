@@ -13,52 +13,48 @@ async function init() {
         "num": 0     
     };
     
+    let dineroInicial = 0;
+    let cantidadInicial = 7;
+
+    let first = true;
 
     for (let j = 50; j < coinData.length - 50; j++) {
         const currentDataPeriod = coinData.slice(0, j + 1);
         const indicator = getIndicator();
         indicator.setData(currentDataPeriod);
-        
         const lastCandle = indicator.getLastCandle();
-        const reduction = lastCandle.close - (lastCandle.close * 0.05);
-        const position = lastCandle.pos;
+        if(first === true) {
 
-        let bajada = false;
-        for (let k = 1; k <= 50; k++) {
-            if(reduction > coinData[position + k].low ) {
-                bajada = true;               
-                break;
-            }
-            
+            console.log(lastCandle.close * cantidadInicial) ;
+            first = false;
+        }
+
+        let venta = true;
+        if(indicator.medianStrategy.checkPriceUpperSMA(48, 0.015) === false) {venta = false} 
+        if(indicator.rsiStrategy.checkPriceUpperRsi(48, 55) === false) {venta = false} 
+
+        if(venta === true && cantidadInicial !== 0) {
+            dineroInicial = lastCandle.close * cantidadInicial;
+            cantidadInicial = 0;
         }
 
 
-        const rsi = indicator.rsiStrategy.getRsi(48, "close");
-        const valueRsi = rsi[rsi.length - 1];
+        let compra = true;
+        if(indicator.medianStrategy.checkPriceDownSMA(48, -0.010) === false) {compra = false} 
+        if(compra === true && dineroInicial !== 0) {
+            cantidadInicial =  dineroInicial / lastCandle.close;
+            dineroInicial = 0;
+        }
 
 
-        const mediaClose = indicator.medianStrategy.getSMAForProperty("close", 48)
+        
+     
 
        
-        
-        // return indicator.medianStrategy.checkPriceUpperSMA(48, 0.015); 
 
-        if(bajada === true) {
-            const lastPos = mediaClose.length - 1;
-            console.log("-- Bien");
-            console.log((lastCandle.close - mediaClose[lastPos]) / mediaClose[lastPos]);
-            console.log(valueRsi);
-        } else {
-            const lastPos = mediaClose.length - 1;
-            console.log("-- Mal");
-            console.log((lastCandle.close - mediaClose[lastPos]) / mediaClose[lastPos]);
-            console.log(valueRsi);
-        }
-
-        veces["num"]++;
     }
 
-    //console.log(veces);
-
+    console.log("dineroInicial " + dineroInicial);
+    console.log("cantidadInicial " + cantidadInicial);
 }
 

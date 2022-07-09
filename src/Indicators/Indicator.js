@@ -4,6 +4,8 @@ const cs = require('candlestick');
 const {getIndicatorMedian} = require('../Strategies/MedianStrategy');
 const {getIndicatorVolumeProfileStrategy} = require('../Strategies/VolumeProfileStrategy');
 const {getIndicatorRSIStrategy} = require('../Strategies/RSIStrategy');
+const {getIndicatorZonesStrategy} = require('../Strategies/ZonesStrategy');
+
 
 
 function getIndicator() {
@@ -24,6 +26,9 @@ class Indicator {
 
     rsiStrategy;
 
+
+    zoneStrategy;
+
     static getInstance() {
         if (!Indicator.#instance) {
             Indicator.#instance = new Indicator()
@@ -37,6 +42,7 @@ class Indicator {
         this.medianStrategy = getIndicatorMedian(this.#dataIni, this.#data);
         this.volumeProfileStrategy = getIndicatorVolumeProfileStrategy(this.#dataIni, this.#data);
         this.rsiStrategy = getIndicatorRSIStrategy(this.#dataIni, this.#data);
+        this.zoneStrategy = getIndicatorZonesStrategy(this.#dataIni, this.#data);
     }
 
     #prepareData(data) {

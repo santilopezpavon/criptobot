@@ -45,6 +45,23 @@ class MedianStrategy {
     }   
 
 
+    checkPriceDownSMA(period, distance) {
+        const lastCandle = this.#dataIni[this.#dataIni.length - 1];
+        const mediaClose = this.#getSMAForProperty("close", period);
+        const lastPos = mediaClose.length - 1;
+
+        if(
+            lastCandle.close < mediaClose[lastPos] && 
+            ((lastCandle.close - mediaClose[lastPos]) / mediaClose[lastPos]) < distance
+        
+            ) {
+                return true;
+        }
+        return false;
+
+    }   
+
+
     checkPriceMantainsDownSMA(period = 48, numCandles = 10, delay = 0) {
         const mediaClose = this.#getSMAForProperty("close", period);
 

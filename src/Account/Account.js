@@ -31,7 +31,7 @@ class Account {
                 const data = response.data;
                 const balances = data.balances;
                 const list = balances.filter(obj => {
-                    return obj.asset !== "BUSD" && obj.asset !== "BNB" && obj.free > 0
+                    return obj.asset !== "BUSD" && obj.free > 0
                 })
                 return list;
             }

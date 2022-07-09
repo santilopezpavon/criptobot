@@ -2,22 +2,16 @@ const fs = require('fs');
 const configuration = require("../../config.json");
 
 
-function getFilesService() {
-    return Memory.getInstance();
+function getFilesService(nameFile = "data") {
+    return new Memory(nameFile);
 }
 
 class Memory {
 
-    static #instance;
+    
 
-    filePath = __dirname + '/data.json';
-
-
-    static getInstance() {
-        if (!Memory.#instance) {
-            Memory.#instance = new Memory()
-        }
-        return Memory.#instance
+    constructor(nameFile) {
+        this.filePath = __dirname + '/' + nameFile + '.json';
     }
 
    
@@ -39,7 +33,19 @@ class Memory {
     return false;
     
        
-    }    
+    }
+    
+    
+    loadFileCheckEmpty(str) {
+        const file = this.loadFile();
+        if(!str || str.length === 0 ) {
+            return false;
+        }
+        if(typeof str === 'object' && !str.hasOwnProperty("response")) {
+            return false;
+        }
+        return file;
+    }
 
 }
 

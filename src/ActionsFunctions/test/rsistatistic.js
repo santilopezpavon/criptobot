@@ -1,17 +1,24 @@
 function isUpperSellFunction(indicator) {  
-    if(indicator.rsiStrategy.checkPriceUpperRsi(48, 45) === false) {return false;}
-    if(indicator.rsiStrategy.checkPriceUpperRsi(30, 60) === false) {return false;}
-    if(indicator.rsiStrategy.checkPriceUpperRsi(20, 55) === false) {return false;}
-    //if(indicator.rsiStrategy.checkCim(48) === false) {return false;}
-   // if(indicator.rsiStrategy.velocityRsi(6, 2) < 4) {return false;}
-   //if(indicator.medianStrategy.checkPriceMantainsDownSMA(48, 8, 1) == false) {return false;}
-  // if(indicator.rsiStrategy.velocityRsi(6, 2) < 4) {return false;}
-   //if(indicator.rsiStrategy.checkPriceUpperRsi(48, 55) === false) {return false;}
-  // if(indicator.medianStrategy.checkPriceUpperSMA(48,0) === false) {return false;}
+   // if(indicator.zoneStrategy.isUpperResistance(48) === false) {return false;}
+    //if(indicator.zoneStrategy.isUpperResistanceVolume(48) === false) {return false;}
+    const dataIni = indicator.getDataInit();
+    const lastPos = dataIni.length - 1;
+    const close = dataIni[lastPos].close;
+    const regresion = indicator.zoneStrategy.getLinearRegresion(10, "high");
+
+    const lastPosRegresion = regresion.length - 1;
 
 
- // if(indicator.rsiStrategy.checkPriceUpperRsi(48, 55) === false) {return false;}
-    return true;
+    if(
+        regresion[regresion.length - 1] < close && 
+        ((close - regresion[lastPosRegresion]) / regresion[lastPosRegresion]) > 0.002
+        
+    ) {
+        return true;
+    }
+    //console.log(indicator.zoneStrategy.getLinearRegresion(10, "high"));
+    //dsadasda
+    return false;
 }
 
 
