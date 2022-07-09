@@ -38,13 +38,10 @@ class Memory {
     
     loadFileCheckEmpty(str) {
         const file = this.loadFile();
-        if(!str || str.length === 0 ) {
-            return false;
+        if(typeof file === 'object' && file.hasOwnProperty("symbol")) {
+            return file;
         }
-        if(typeof str === 'object' && !str.hasOwnProperty("response")) {
-            return false;
-        }
-        return file;
+        return false;
     }
 
 }

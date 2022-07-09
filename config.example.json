@@ -30,7 +30,12 @@
         "asset": {
             "first": "DOT",
             "second": "BUSD",
-            "potectedQty": 0
+            "potectedQty": 0,
+            "temporality": "5m",
+            "profit": 0.007
         }
+    },
+    "test": {
+        "initPeriod": 50
     }
 }

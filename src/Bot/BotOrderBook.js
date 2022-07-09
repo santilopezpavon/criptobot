@@ -48,8 +48,6 @@ class BotOrderBook {
     }
 
     async init() {
-
-
         const current = this;
         await this.#coinsInfo.getTruncates(this.#pair).then(function (res) {
             current.#truncates = {
@@ -58,9 +56,9 @@ class BotOrderBook {
             };
         });  
 
-        this.action();
+        current.action();
         setInterval(function () {
-            this.action();
+            current.action();
         }, current.timeIntervalMinutes * 60 * 1000);
         
     }
@@ -74,15 +72,17 @@ class BotOrderBook {
 
 
     async buy() {
+        console.log("Voy a revisar acción de Compra");
         const current = this;
 
         let doAction = false;
         if (current.#timeactionBuy == null || current.#timeactionBuy <= Date.now()) { doAction = true;}
 
-        if (doAction == true) {       
-
+        if (doAction === true) {       
+            console.log("Voy a revisar la memoria");
             // Cargar ordenes pendientes en memoria.
             const file = current.#memory.loadFileCheckEmpty(); 
+
             if(file == false) { return false;}
 
             // Actualizar la Memoria
@@ -93,10 +93,9 @@ class BotOrderBook {
             }).catch(function (error) {
                 return false;
             })
-
+            
             if(responseUpdate == false) { return false;}
             current.#memory.saveFile(responseUpdate);
-
             current.#timeactionBuy = Date.now() + (current.timetoresendminutesbuy * 60 * 1000);
         }
 
@@ -114,13 +113,25 @@ class BotOrderBook {
         const minPrice = inforMarket["Min Price"];
 
         let priceBuyCalculate = false;
-        if( minPrice < originPrice) {
+        if( normPrice20 < originPrice) {
+            priceBuyCalculate = normPrice20;
+        } else if( minPrice < originPrice) {
             priceBuyCalculate = minPrice;
         }
 
+        
         if(priceBuyCalculate === false) {
             return false;
         }
+
+
+        const rentabilidad = (originPrice - priceBuyCalculate) / priceBuyCalculate;
+        if(rentabilidad < 0.03) {
+            return false;
+        }
+
+
+        console.log("Preparar acción de Compra");
 
 
         const order = {
@@ -140,6 +151,7 @@ class BotOrderBook {
 
 
     async sell() {
+        console.log("Voy a revisar acción de venta");
         const current = this;
         let doAction = false;
 
@@ -152,17 +164,21 @@ class BotOrderBook {
         
         // Posibilidad de mercado para vender.
         if(
-            inforMarket["Profit potencial min"] < 0.65 && 
-            inforMarket["Normalize Price"] < 0.75
+            inforMarket["Profit potencial min"] < 0.80 || 
+            inforMarket["Normalize Price"] < 0.60
         ) {
             return false;
         }
 
+        let precioVenta = inforMarket["Max Price"];
 
+        if(inforMarket["Normalize Price"] < 0.8) {
+            precioVenta = inforMarket["normPrice80"];
+        }
 
-
+        
         // Stock Para hacer la venta.
-        const qty = this.#account.getStockOf(this.#firstCoin);
+        const qty = await this.#account.getStockOf(this.#firstCoin);
         if(qty == false) { return false;}
 
         const value = await this.#coinsInfo.getTotalValueAsset(this.#firstCoin, qty);
@@ -172,18 +188,21 @@ class BotOrderBook {
 
         // Preparar Acción de Venta
 
+        console.log("Hay Stock, voy a hacer una orden de venta");
         const order = {
-            "price": this.#truncate(inforMarket["Max Price"], "price"), 
+            "price": this.#truncate(precioVenta, "price"), 
             "quantity": this.#truncate(qty, "qty"),
             "timeInForce": "GTC"
         };
 
-        this.#client.newOrder(current.#pair, "SELL", 'LIMIT', order).then(function (response) {   
-            current.#memory.saveFile(response);      
-            return response;
+        const dataOrderSell = await this.#client.newOrder(current.#pair, "SELL", 'LIMIT', order).then(function (response) {   
+               
+            return response.data;
         }).catch(function (error) {
+            console.log(error);
             return false;
-        });          
+        });       
+        current.#memory.saveFile(dataOrderSell);      
     }
 
     #truncate(value, type) {
@@ -242,6 +261,8 @@ class BotOrderBook {
         const normalizado = (precioCierre - precioDemanda)/(precioOferta - precioDemanda);
         const normPrice20 = 0.2 * (precioOferta - precioDemanda) + precioDemanda;
         const normPrice80 = 0.80 * (precioOferta - precioDemanda) + precioDemanda;
+        const normPrice30 = 0.3 * (precioOferta - precioDemanda) + precioDemanda;
+        const normPrice70 = 0.70 * (precioOferta - precioDemanda) + precioDemanda;
         return {
             "Mean Volume": volumenMedio,
             "Max Price": precioOferta,
@@ -250,7 +271,9 @@ class BotOrderBook {
             "Normalize Price": normalizado,
             "Profit potencial": ((precioOferta - precioDemanda) / precioDemanda) * 100,
             "normPrice20": normPrice20,
+            "normPrice30": normPrice30,
             "normPrice80": normPrice80,
+            "normPrice70": normPrice70,
             "Profit potencial min": ((normPrice80 - normPrice20) / normPrice20) * 100,
         };
     }
