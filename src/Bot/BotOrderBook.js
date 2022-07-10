@@ -110,13 +110,22 @@ class BotOrderBook {
 
         const originPrice = fileUpdated.price;
         const normPrice20 = inforMarket["normPrice20"];
+        const normPrice30 = inforMarket["normPrice30"];
         const minPrice = inforMarket["Min Price"];
 
+        const rentabilidad = (originPrice - minPrice) / minPrice;
+        const rentabilidad20 = (originPrice - normPrice20) / normPrice20;
+        const rentabilidad30 = (originPrice - normPrice30) / normPrice30;
+
+
         let priceBuyCalculate = false;
-        if( normPrice20 < originPrice) {
-            priceBuyCalculate = normPrice20;
-        } else if( minPrice < originPrice) {
-            priceBuyCalculate = minPrice;
+
+        if( rentabilidad30 < originPrice && rentabilidad30 > 0.03) {
+            priceBuyCalculate = rentabilidad30;
+        } else if( rentabilidad20 < originPrice && rentabilidad20 > 0.03) {
+            priceBuyCalculate = rentabilidad20;
+        } else if( rentabilidad < originPrice && rentabilidad > 0.03) {
+            priceBuyCalculate = rentabilidad;
         }
 
         
@@ -124,11 +133,6 @@ class BotOrderBook {
             return false;
         }
 
-
-        const rentabilidad = (originPrice - priceBuyCalculate) / priceBuyCalculate;
-        if(rentabilidad < 0.03) {
-            return false;
-        }
 
 
         console.log("Preparar acción de Compra");
@@ -164,16 +168,31 @@ class BotOrderBook {
         
         // Posibilidad de mercado para vender.
         if(
-            inforMarket["Profit potencial min"] < 0.80 || 
-            inforMarket["Normalize Price"] < 0.60
-        ) {
+            inforMarket["Profit potencial min 2"] < 0.80) {
             return false;
         }
 
-        let precioVenta = inforMarket["Max Price"];
-
-        if(inforMarket["Normalize Price"] < 0.8) {
+        let precioVenta = false;
+        if(
+            inforMarket["Current Price"] < inforMarket["normPrice70"]
+        ) {
+            precioVenta = inforMarket["normPrice70"];
+        } else if(
+            inforMarket["Current Price"] < inforMarket["normPrice80"]
+        ) {
             precioVenta = inforMarket["normPrice80"];
+        } else if(
+            inforMarket["Current Price"] < inforMarket["Max Price"]
+        ) {
+            precioVenta = inforMarket["Max Price"];
+        }
+
+        
+
+        
+
+        if(precioVenta === false) {
+            return false;
         }
 
         
@@ -263,6 +282,8 @@ class BotOrderBook {
         const normPrice80 = 0.80 * (precioOferta - precioDemanda) + precioDemanda;
         const normPrice30 = 0.3 * (precioOferta - precioDemanda) + precioDemanda;
         const normPrice70 = 0.70 * (precioOferta - precioDemanda) + precioDemanda;
+
+
         return {
             "Mean Volume": volumenMedio,
             "Max Price": precioOferta,
@@ -275,6 +296,7 @@ class BotOrderBook {
             "normPrice80": normPrice80,
             "normPrice70": normPrice70,
             "Profit potencial min": ((normPrice80 - normPrice20) / normPrice20) * 100,
+            "Profit potencial min 2": ((normPrice70 - normPrice30) / normPrice30) * 100,
         };
     }
 }
