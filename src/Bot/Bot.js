@@ -105,7 +105,7 @@ class Bot {
 
             // Hacer la venta 
             console.log("Voy a hacer la venta");
-            const price_close = data[data.length - 1]["close"];
+            const price_close = data[data.length - 1]["close"] * 1.001;
 
             let profitClose = null;
             if (typeof sellFunctionUpper === 'object') {
