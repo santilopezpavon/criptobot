@@ -4,7 +4,7 @@ const statsService = getStrategiesStatisticalTestService();
  //let all = statsService.getStrategiesByDirectories([ "test", "closed", "combination"]);
 
 
- let all = statsService.getStrategiesByDirectories(["test"]);
+ let all = statsService.getStrategiesByDirectories(["test", "closed"]);
 init(all);
 async function init(strategiesArray) {
     const results = await statsService.getCoins(

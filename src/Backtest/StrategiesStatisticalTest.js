@@ -2,7 +2,7 @@ const getCacheService = require("./../../src/Memory/Cache");
 const getCoinsInformation = require("../Connector/CoinsInformation");
 const getIndicator = require("./../../src/Indicators/Indicator");
 const configuration = require("../../config.json");
-const FS   = require("fs");
+const FS = require("fs");
 const Path = require("path");
 
 
@@ -21,7 +21,7 @@ class StrategiesStatisticalTest {
         return StrategiesStatisticalTest.#instance
     }
 
-    #coins  = [
+    #coins = [
         "DOTBUSD", "BTCBUSD", "ADABUSD", "GLMRBUSD",
         "BNBBUSD", "XRPBUSD", "DOGEBUSD", "AVAXBUSD",
         "SOLBUSD", "ETHBUSD", "TRXBUSD", "LINKBUSD",
@@ -49,8 +49,8 @@ class StrategiesStatisticalTest {
 
         for (let index = 0; index < Files.length; index++) {
             Files[index] = Files[index].replace(prefix, '');
-            
-        }       
+
+        }
         return Files;
     }
 
@@ -61,7 +61,7 @@ class StrategiesStatisticalTest {
             const allFiles = this.getStrategiesByDirectory(element);
             for (let j = 0; j < allFiles.length; j++) {
                 files.push(allFiles[j]);
-                
+
             }
         }
         return files;
@@ -76,7 +76,7 @@ class StrategiesStatisticalTest {
                 "%subidas": 0,
                 "%bajadas": 0,
                 "total": 0,
-                
+
             };
         }
 
@@ -96,11 +96,18 @@ class StrategiesStatisticalTest {
                     } = require("./../ActionsFunctions/" + strategy);
 
                     let pattern = false;
-                    if(isUpperSellFunction(current.#indicator)) {
-                        pattern = true;
+
+                    let sellFunctionUpper = isUpperSellFunction(current.#indicator);
+                    if (typeof sellFunctionUpper === 'object') {
+                        pattern = sellFunctionUpper.upperSell;
+                    } else {
+                        pattern = sellFunctionUpper;
                     }
 
-                    if(pattern === true) {
+
+
+
+                    if (pattern === true) {
                         const candles = current.#indicator.getDataInit();
                         const lastCandle = current.#indicator.getLastCandle();
 
@@ -109,42 +116,48 @@ class StrategiesStatisticalTest {
                         const futureCandle4 = coinData[position + 15];
 
 
-                        const reduction = lastCandle.close - (lastCandle.close * configuration.analize.asset.profit);
-                        
+                        let profitClose = configuration.analize.asset.profit;
+                        if (typeof sellFunctionUpper === 'object') {
+                            profitClose = sellFunctionUpper.profit;
+                        }
+
+
+                        const reduction = lastCandle.close - (lastCandle.close * profitClose);
+
                         let bajada = false;
                         for (let k = 1; k <= 50; k++) {
-                            if(reduction > coinData[position + k].low ) {
+                            if (reduction > coinData[position + k].low) {
                                 bajada = true;
                                 break;
                             }
-                            
+
                         }
 
-                        if(bajada === false) {
+                        if (bajada === false) {
                             results[strategy]["subidas"]++;
 
-                        } else if(bajada == true) {
+                        } else if (bajada == true) {
                             results[strategy]["bajadas"]++;
-                        } 
+                        }
 
                         results[strategy]["total"]++;
                     }
-                }                     
+                }
 
-            }           
+            }
         }
 
         for (const key in results) {
-                results[key]["%subidas"] = (results[key]["subidas"] / results[key]["total"]) * 100;
-                results[key]["%bajadas"] = (results[key]["bajadas"] / results[key]["total"]) * 100;
-            }
+            results[key]["%subidas"] = (results[key]["subidas"] / results[key]["total"]) * 100;
+            results[key]["%bajadas"] = (results[key]["bajadas"] / results[key]["total"]) * 100;
+        }
         return results
     }
 
     async getCoin(pair, time) {
         const current = this;
         const dataPair = this.#cacheService.load(pair + "_" + time);
-        if(dataPair === false) {
+        if (dataPair === false) {
             return await this.#coinsInformation.getHistoricalData(pair, time).then(async function (data) {
                 current.#cacheService.save(pair + "_" + time, data, 10);
                 return data;
@@ -153,7 +166,7 @@ class StrategiesStatisticalTest {
             return dataPair
 
         }
-       
+
     }
 
 }
